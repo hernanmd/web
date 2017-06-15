@@ -1,0 +1,1340 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Hernán Morales (hernan.morales@gmail.com)" />
+  <meta name="author" content="Institute of Veterinary Genetics (IGEVET - CONICET - CCT La Plata)" />
+  <meta name="author" content="Buenos Aires, Argentina" />
+  <meta name="date" content="2017-12-05" />
+  <meta name="keywords" content="phylogenetics, dna, sequence, classification, phylogeography, blast, species, organism" />
+  <title>BioSmalltalk v 1.0</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">BioSmalltalk v 1.0</h1>
+<h1 class="subtitle">User's Guide</h1>
+<h2 class="author">Hernán Morales (hernan.morales@gmail.com)</h2>
+<h2 class="author">Institute of Veterinary Genetics (IGEVET - CONICET - CCT La Plata)</h2>
+<h2 class="author">Buenos Aires, Argentina</h2>
+<h3 class="date">15/05/2017</h3>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#introduction">Introduction</a><ul>
+<li><a href="#notes-and-disclaimers">Notes and Disclaimers</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#smalltalk-basics">Smalltalk Basics</a><ul>
+<li><a href="#additional-references">Additional References</a></li>
+</ul></li>
+<li><a href="#scripting-languages-versus-smalltalk">Scripting Languages versus Smalltalk</a></li>
+<li><a href="#executing-scripts">Executing Scripts</a></li>
+</ul></li>
+<li><a href="#bioinformatics-with-biosmalltalk">Bioinformatics with BioSmalltalk</a><ul>
+<li><a href="#sequences">Sequences</a></li>
+<li><a href="#mutable-sequences">Mutable Sequences</a></li>
+<li><a href="#operations-on-sequences">Operations on Sequences</a><ul>
+<li><a href="#basic-operations">Basic Operations</a></li>
+<li><a href="#sequence-complement">Sequence complement</a></li>
+<li><a href="#reverse-complement">Reverse complement</a></li>
+<li><a href="#transcription-and-back-transcription">Transcription and back transcription</a></li>
+<li><a href="#sequence-translation">Sequence translation</a></li>
+</ul></li>
+<li><a href="#alphabets">Alphabets</a><ul>
+<li><a href="#international-union-of-pure-and-applied-chemistry-iupac">International Union of Pure and Applied Chemistry (IUPAC)</a></li>
+</ul></li>
+<li><a href="#sequence-records">Sequence Records</a></li>
+<li><a href="#repetitive-sequences">Repetitive sequences</a><ul>
+<li><a href="#interspersed-repeats.">Interspersed repeats.</a></li>
+<li><a href="#tandem-repeat-sequences">Tandem repeat sequences</a></li>
+<li><a href="#segmental-duplications">Segmental duplications</a></li>
+</ul></li>
+<li><a href="#panels-of-markers">Panels of Markers</a><ul>
+<li><a href="#microsatellites-and-minisatellites-locus">Microsatellites and Minisatellites Locus</a></li>
+</ul></li>
+<li><a href="#reading-and-writing-sequences">Reading and Writing Sequences</a><ul>
+<li><a href="#reading-fasta-records">Reading FASTA records</a></li>
+</ul></li>
+<li><a href="#genomes">Genomes</a><ul>
+<li><a href="#downloading-genomes">Downloading Genomes</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#parsing">Parsing</a><ul>
+<li><a href="#about-parsing">About parsing</a></li>
+<li><a href="#xml-parsing-modes">XML parsing modes</a></li>
+<li><a href="#parsing-xml-files">Parsing XML files</a></li>
+<li><a href="#parsing-in-biosmalltalk">Parsing in BioSmalltalk</a></li>
+<li><a href="#parsing-sequences">Parsing Sequences</a></li>
+<li><a href="#parsing-accession-numbers">Parsing Accession Numbers</a></li>
+<li><a href="#parsing-fasta-files">Parsing FASTA files</a></li>
+</ul></li>
+<li><a href="#alignments">Alignments</a></li>
+<li><a href="#blast">BLAST</a></li>
+<li><a href="#entrez">Entrez</a><ul>
+<li><a href="#entrez-examples">Entrez Examples</a><ul>
+<li><a href="#fasta-record-from-protein">FASTA record from Protein</a></li>
+<li><a href="#seqid-record-from-protein">SeqID record from Protein</a></li>
+<li><a href="#genbank-records-from-nuccore">GenBank records from Nuccore</a></li>
+<li><a href="#xml-records-from-pubmed">XML records from Pubmed</a></li>
+<li><a href="#xml-records-from-protein">XML records from Protein</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#swiss-prot-and-expasy">Swiss-Prot and ExPASy</a><ul>
+<li><a href="#pdb">PDB</a></li>
+<li><a href="#pdbepisa">PDBePISA</a></li>
+</ul></li>
+<li><a href="#wrappers">Wrappers</a></li>
+<li><a href="#population-genetics">Population Genetics</a><ul>
+<li><a href="#plink">PLINK</a><ul>
+<li><a href="#wrapper-execution">Wrapper execution</a></li>
+<li><a href="#reading-plink-pedmap-files">Reading PLINK (PEDMAP) files</a></li>
+<li><a href="#forcing-reference-alleles">Forcing reference alleles</a></li>
+</ul></li>
+<li><a href="#shapeit">ShapeIt</a><ul>
+<li><a href="#input-preparation">Input preparation</a></li>
+<li><a href="#wrapper-execution-1">Wrapper execution</a></li>
+</ul></li>
+<li><a href="#lamp-ld">LAMP-LD</a><ul>
+<li><a href="#input-preparation-1">Input preparation</a></li>
+<li><a href="#wrapper-execution-2">Wrapper execution</a></li>
+</ul></li>
+<li><a href="#hmmer">HMMER</a></li>
+<li><a href="#phyx">Phyx</a></li>
+</ul></li>
+<li><a href="#phylogenetics">Phylogenetics</a><ul>
+<li><a href="#nexus-file-format">Nexus File Format</a></li>
+<li><a href="#newick-file-format">Newick File Format</a></li>
+</ul></li>
+<li><a href="#clustering">Clustering</a></li>
+<li><a href="#graphics">Graphics</a><ul>
+<li><a href="#dotplots">DotPlots</a></li>
+<li><a href="#bar-charts">Bar Charts</a></li>
+<li><a href="#histograms">Histograms</a></li>
+</ul></li>
+<li><a href="#widgets">Widgets</a><ul>
+<li><a href="#chromosome-selection">Chromosome Selection</a></li>
+<li><a href="#csv-explorer">CSV Explorer</a></li>
+<li><a href="#matrix-explorer">Matrix Explorer</a></li>
+</ul></li>
+<li><a href="#third-party-libraries">Third Party Libraries</a><ul>
+<li><a href="#persistency">Persistency</a></li>
+<li><a href="#mathematics">Mathematics</a></li>
+<li><a href="#os-communication">OS Communication</a></li>
+</ul></li>
+<li><a href="#developing-biosmalltalk">Developing BioSmalltalk</a><ul>
+<li><a href="#code-organization">Code Organization</a><ul>
+<li><a href="#user-code-organization">User Code Organization</a></li>
+<li><a href="#developer-code-organization">Developer Code Organization</a></li>
+</ul></li>
+<li><a href="#building-from-source">Building from Source</a></li>
+<li><a href="#testing">Testing</a><ul>
+<li><a href="#executing-tests">Executing Tests</a></li>
+<li><a href="#writing-tests">Writing Tests</a></li>
+<li><a href="#test-data">Test Data</a></li>
+</ul></li>
+<li><a href="#subsystems">SubSystems</a><ul>
+<li><a href="#the-engines-subsystem">The Engines SubSystem</a></li>
+<li><a href="#the-parsing-subsystem">The Parsing SubSystem</a></li>
+<li><a href="#the-entrez-subsystem">The Entrez SubSystem</a></li>
+<li><a href="#the-files-subsystem">The Files SubSystem</a></li>
+</ul></li>
+<li><a href="#troubleshooting">Troubleshooting</a></li>
+</ul></li>
+<li><a href="#community">Community</a><ul>
+<li><a href="#mailing-lists">Mailing lists</a></li>
+</ul></li>
+</ul>
+</div>
+<p></p>
+<h1 id="introduction">Introduction</h1>
+<p>BioSmalltalk is a library for doing Bioinformatics with the Smalltalk programming system. This guide's goal is to be useful for bioinformaticians, biologists, or life scientists, with little or no experience at all in programming or object technology. It will explain everything needed to understand how to use BioSmalltalk to reach your objectives, also contains the specific context and vocabulary to communicate properly in mailing lists when you need help. Object-Oriented Programming concepts are not required for basic tasks (like building sequences, parsing files, and exploring results) but are specially necessary to build more complex objects and/or debugging code, for example.</p>
+<h2 id="notes-and-disclaimers">Notes and Disclaimers</h2>
+<p>BioSmalltalk is free of charge and far from perfect. The developer does not provide any guarantees for quality, availability, or fitness for particular purpose. BioSmalltalk is licensed with the MIT License.</p>
+<p>If you feel that you can contribute to <strong>BioSmalltalk</strong> development, please do not hesitate to contact through the available communities.</p>
+<p></p>
+<h2 id="installation">Installation</h2>
+<p>BioSmalltalk is currently implemented in Pharo, a Smalltalk dialect. It is distributed in several forms depending of the target platform:</p>
+<ul>
+<li>For Microsoft Windows as a .exe installer.</li>
+<li>For Mac/OS X as a compressed ZIP file.</li>
+<li>For GNU/Linux as a compressed .tgz file.</li>
+</ul>
+<p>Once installed, all distributions contains:</p>
+<ul>
+<li>A virtual image file (.image extension)</li>
+<li>A changes file (.changes extension)</li>
+<li>The Smalltalk Virtual Machine (VM) (executable file)</li>
+<li>A group of folders including examples and test data.</li>
+</ul>
+<p>The usual way to run BioSmalltalk is to open the &quot;Environment&quot;, a run-time Integrated Developement Environment (IDE) where all coding activities are performed. This means launching the VM and selecting a virtual image. At first you will have just one image - the one you downloaded in the BioSmalltalk distribution - but as you gain more experience with Smalltalk you will find having several images for different purposes.</p>
+<p>You may also work by executing scripts from .st files (explained in the Executing Scripts section) however you would miss powerful Smalltalk tools like Browsers, Refactoring Tools, Code Critics, Finders, etc.</p>
+<p></p>
+<h2 id="smalltalk-basics">Smalltalk Basics</h2>
+<p>You may evaluate scripts or code in BioSmalltalk as in most Smalltalk environments: Selecting the code, right button, and choose one of the following operations:</p>
+<ul>
+<li><strong>Print it</strong> (<strong>Show it</strong>, or <strong>Display it</strong>): To print the results as a simple String next to the selected code.</li>
+<li><strong>Inspect it</strong>: To open an Inspector window. You may observe and send messages over the selected object in the left pane</li>
+<li><strong>Explore it</strong>: To open an Explorer window. You may expand the tree items, and send messages over the selected object.</li>
+</ul>
+<p>At least you should work with two tools. A &quot;System Browser&quot; and a &quot;Workspace&quot;. The famous System Browser, Class Hierarchy Browser, or simply Browser, is the most important tool for development in Smalltalk and enables to explore and modify the categories, classes, methods in the system. Actually is so powerful that you can do more advanced actions like finding class references, perform code critics and refactorings, find method senders and implementors, execute tests, group classes, manage breakpoints, find method examples and past versions, among other actions.</p>
+<h3 id="additional-references">Additional References</h3>
+<p>A comprehensive description of any Smalltalk system would deserve a complete book on its own. Fortunately, there are several good books devoted to describe the Smalltalk language and environment. I recommend the following ones as starting points:</p>
+<ul>
+<li>If you are very new about object technology, a <strong>must</strong> read and one of the best books is “Object Technology” (1997, ISBN: 0-201-30994-7) from David Taylor.</li>
+<li>The Smalltalk Best Practices Patterns is a good book for coding conventions and style: <a href="http://www.amazon.com/Smalltalk-Best-Practice-Patterns-Kent/dp/013476904X" class="uri">http://www.amazon.com/Smalltalk-Best-Practice-Patterns-Kent/dp/013476904X</a></li>
+<li>There are free on-line books in the Stéphane Ducasse personal web site: <a href="http://stephane.ducasse.free.fr/FreeBooks.html" class="uri">http://stephane.ducasse.free.fr/FreeBooks.html</a></li>
+<li>Pharo Books: <a href="http://files.pharo.org/books/" class="uri">http://files.pharo.org/books/</a></li>
+</ul>
+<p>Finally, a useful advice often done by experienced Smalltalkers is to actually experiment with the environment, make mistakes, and ask in the mailing lists or forums in case of doubt.</p>
+<p></p>
+<h2 id="scripting-languages-versus-smalltalk">Scripting Languages versus Smalltalk</h2>
+=1.8mm
+
+<p>Usually depends of a web browser on the generated pages from cross-linking the source code and comments by an autodoc tool. This setting usually doesn't allow targeted navigation.</p>
+<p></p>
+<h2 id="executing-scripts">Executing Scripts</h2>
+<p>You can execute scripts in .st files from command-line. Just cd into the directory where the &quot;pharo&quot; script is found and evaluate the following test expression to check everything is working properly:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">./pharo</span> -nodisplay Pharo.image eval <span class="st">&quot;3 + 4&quot;</span> </code></pre></div>
+<p>To run a script in a file you can pass the file name as argument to the image:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">./pharo</span> Pharo.image my_script.st</code></pre></div>
+<p></p>
+<h1 id="bioinformatics-with-biosmalltalk">Bioinformatics with BioSmalltalk</h1>
+<p>Developing and using Object-Oriented technology in BioSmalltalk is about finding your objects of interest in the (virtual) image. Think about the virtual image, or simply the image, as a snapshot of the system current state.</p>
+<p>If you want to experiment with sequences, your first task is then to find classes related to sequences (hint: Search for <strong>BioSequence</strong> in the Browser). Once found, you can easily select methods and explore the senders to check how they are used. You will see some methods require a minimum instantiation effort, like a reverse complement, some others will require you to set up a whole context of many objects to figure out how to use them.</p>
+<p>Although the above workflow could be valid for all the Bioinformatics libraries, in BioSmalltalk you have probably the most powerfull tools to explore a system through targeted navigation. This is a big change if you are too used to scripting and sweeping raw textual files.</p>
+<h2 id="sequences">Sequences</h2>
+<p>A biological sequence is a single, continuous molecule of nucleic acid or protein, and represents a naturally occurring, or experimentally generated, fragment of genetic or protein material or any intermediate product (like the messenger RNA). It is possibly the most important object in bioinformatics and most bioinformatics workflows involve using sequences at some point.</p>
+<p>In BioSmalltalk sequences are represented with <strong>BioSequence</strong> object. We will talk about representation later. If you have previous programming experience, a sequence is essentialy a <strong>String</strong> object with an alphabet. It is read-only, if you want to modify a sequence in place you may use <strong>BioMutableSeq</strong>.</p>
+<p><em>Creating a DNA sequence</em></p>
+<pre class="smalltalk"><code>BioSequence newDNA: &#39;atcggtcggctta&#39;.</code></pre>
+<p>The above one-liner creates a &quot;BioSequence instance&quot;. Nucleotide letters are case-insensitive, this is, meaning does not change based on differing use of uppercase and lowercase letters. When the alphabet information of a sequence is missing (as in this case, or when reading sequences from FASTA files), <strong>BioSequence</strong> will try to guess the alphabet type. Notice you can also create a sequence specifying the alphabet, for example:</p>
+<pre class="smalltalk"><code>BioSequence newAmbiguousDNA:&#39;AAGTCAGTGTACTATTAGCATGCATGTGCAACACATTAGCTG&#39;.
+BioSequence newUnambiguousDNA:&#39;AAGTCAGTGTACTATTAGCATGCATGTGCAACACATTAGCTG&#39;.</code></pre>
+<p>Similarily, to create a RNA and Protein sequence, you may use:</p>
+<pre class="smalltalk"><code>BioSequence newRNA: &#39;auugccuacauaggc&#39;.
+BioSequence newProtein: &#39;AGFAVENDSA&#39;.</code></pre>
+<p><em>Please note: Next to the following expressions, between quotations, is displayed the result of the &quot;Print it&quot; (or &quot;Show it&quot; depending the Smalltalk flavor you are using) operation</em></p>
+<p>The format of the <strong>BioSequence</strong> printString is:</p>
+<pre class="smalltalk"><code>&quot;
+aBioSequence( sequence_size ) ([ letters_in_alphabet ] alphabet_class) [sequence_letters]
+&quot;</code></pre>
+<p>An easier way to create sequences, without specifying the <strong>BioSequence</strong> class, is converting a <strong>String</strong> into a Sequence object. The following expressions display the contents of the #asSequence message.</p>
+<pre class="smalltalk"><code>&#39;ATGCTAGN&#39; asSequence.  &quot; a BioSequence(8) ([GATCN] IUPAC DNA) [ATGCTAGN] &quot;
+
+&#39;RSWAFFGH&#39; asSequence.  &quot; a BioSequence(8) ([ACDEFGHIKLMNPQRSTVWY] IUPAC -&gt; Protein) [RSWAFFGH] &quot;
+
+&#39;AGCUCGGCU&#39; asSequence. &quot; a BioSequence(9) ([GAUCRYWSMKHBVDN] IUPAC -&gt; RNA -&gt; Ambiguous) [AGCUCGGCU] &quot;
+
+&#39;VPFSNATGVVRSPFEYPQYYLAE&#39; asSequence 
+&quot; a BioSequence(23) ([ACDEFGHIKLMNPQRSTVWY] IUPAC -&gt; Protein) [VPFSNATGVVRSPFEYPQYYLAE] &quot;</code></pre>
+<p></p>
+<h2 id="mutable-sequences">Mutable Sequences</h2>
+<p>A biological mutable sequence is like a normal sequence, but it is editable, i.e. not read-only.</p>
+<p>Take note that Smalltalk, as in R, index starts counting from 1. One of the benefits of 1-based system is a more human-centered thinking, rather than 0-based counting which are more machine centered. The following script modifies the first position in a RNA sequence:</p>
+<pre class="smalltalk"><code>(BioMutableSeq newRNA: &#39;auugccuacauaggc&#39;) 
+        at: 1 put: $g;
+        yourself. 
+&quot; a BioMutableSeq(15) ([GAUC] IUPAC -&gt; RNA -&gt; Unambiguous) [guugccuacauaggc] &quot;</code></pre>
+<p>You may completely replace the sequence if appropriate, this could be convenient for preserving additional information (annotations like sequence features) still valid for the new sequence.</p>
+<pre class="smalltalkx"><code>(BioMutableSeq newUnambiguousDNA: &#39;ATGC&#39;)
+        seq: &#39;CGTA&#39;;
+        yourself. </code></pre>
+<p></p>
+<h2 id="operations-on-sequences">Operations on Sequences</h2>
+<p>The following subsections describes available operations on sequences.</p>
+<h3 id="basic-operations">Basic Operations</h3>
+<p>Accessing a subsequence and display it as a <strong>String</strong>:</p>
+<pre class="smalltalk"><code>((BioSequence newDNA: &#39;atcggtcggctta&#39;) copyFrom: 3 to: 5) asString.  &quot; --&gt; &#39;cgg&#39; &quot;</code></pre>
+<p>Count the number of bases of a sequence:</p>
+<pre class="smalltalk"><code>(BioSequence newUnambiguousDNA:&#39;AAGTCAGTGTACTATTAGCATGGCTG&#39;) size.
+ &quot; --&gt; 26 &quot;</code></pre>
+<p>Get the molecular weight (MW) of a sequence:</p>
+<pre class="smalltalk"><code>&#39;AGTACACTGGT&#39; asSequence molecularWeightNonDegen  &quot; --&gt; 3435.23&quot;</code></pre>
+<p>Get the GC nucleotide content:</p>
+<pre class="smalltalk"><code>&#39;AGTACACTGGT&#39; asSequence gc.</code></pre>
+<h3 id="sequence-complement">Sequence complement</h3>
+<pre class="smalltalk"><code>(BioSequence newDNA: &#39;AAGTCAGTGTACTATTAGCATGCATGTGCAACACATTAGCTG&#39;) complement
+
+&quot; a BioSequence(42) ([GATCN] IUPAC DNA) [TTCAGTCACATGATAATCGTACGTACACGTTGTGTAATCGAC] &quot;</code></pre>
+<h3 id="reverse-complement">Reverse complement</h3>
+<p>This message answers a copy of the receiver's sequence complemented and with element order reversed. You may need to work with the reverse complement of a sequence if it contains an ORF on the reverse strand.</p>
+<p>Upper and lower case are preserved as can be used to mark regions of interest. Spaces and special letters (like '-' and spaces) are left untouched.</p>
+<pre class="smalltalk"><code>(BioSequence newAmbiguousDNA: &#39;AcTG C-NH&#39; ) reverseComplement.
+&quot; a BioSequence(9) ([ACGTWSMKRYBDHVN] IUPAC DNA -&gt; Ambiguous) [DN-G CAgT] &quot;</code></pre>
+<p>Ambiguous and unambiguous nucleotide sequences are supported</p>
+<pre class="smalltalk"><code>(BioSequence newUnambiguousDNA: &#39;GGGGaaaaaaaatttatatat&#39;) reverseComplement
+&quot; a BioSequence(21) ([GATCN] IUPAC DNA) [ATATATAAATTTTTTTTCCCC] &quot;</code></pre>
+<p>Supports BioSequence and BioMutableSeq</p>
+<pre class="smalltalk"><code>(BioMutableSeq newDNA: &#39;AAGTCAGTGTACTATTAGCATGCATGTGCAACACATTAGCTG&#39;) reverseComplement
+
+&quot; a BioMutableSeq(42) ([GATCN] IUPAC DNA) [CAGCTAATGTGTTGCACATGCATGCTAATAGTACACTGACTT] &quot;</code></pre>
+<p>In the answered sequence, the alphabet is preserved.</p>
+<pre class="smalltalk"><code>| mySeq |
+mySeq := BioSequence newDNA: &#39;AAGTCAGTGTACTATTAGCATGCATGTGCAACACATTAGCTG&#39;.
+mySeq alphabet = mySeq reverseComplement alphabet</code></pre>
+<h3 id="transcription-and-back-transcription">Transcription and back transcription</h3>
+<p>Sequence transcription is a cellular process which firstly reads a DNA gene, producing what is known as <em>primary transcript</em> represented by an equivalent RNA sequence (a mRNA precursor). As a second step, a subprocess named <em>splicing</em> or <em>intron splicing</em> removes the introns from the mRNA precursor and produces the final product: a messenger RNA or mRNA.</p>
+<h3 id="sequence-translation">Sequence translation</h3>
+<p>Translation of RNA is another cellular process which could determine the codons of a mRNA segment, and could be performed in BioSmalltalk with a one-liner:</p>
+<pre class="smalltalk"><code>(BioSequence newRNA: &#39;AUGGCCAUUGUAAUGGGCCGCUGAAAGGGUGCCCGAUAG&#39; ) translate. 
+&quot; a BioSequence(13) ([ACDEFGHIKLMNPQRSTVWY] IUPAC -&gt; Protein) [MAIVMGR*KGAR*] &quot;</code></pre>
+<p>the same could be achieved stopping at the first stop codon:</p>
+<pre class="smalltalk"><code>(BioSequence newRNA: &#39;AUGGCCAUUGUAAUGGGCCGCUGAAAGGGUGCCCGAUAG&#39; ) translateToStop
+&quot; a BioSequence(7) ([ACDEFGHIKLMNPQRSTVWY] IUPAC -&gt; Protein) [MAIVMGR]&quot;</code></pre>
+<p>Translate and concatenate a DNA sequence to Protein sequence:</p>
+<pre class="smalltalk"><code>| dna protein |
+dna := BioSequence newDNA: &#39;atcggtcggctta&#39;.
+protein := BioSequence newProtein: &#39;AGFAVENDSA&#39;.
+protein , dna translate.</code></pre>
+<p>It is possible to specify the translation table to use alternative genetic codes, according to the <a href="http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi">NCBI Genetic Codes</a> tables (check the transl_table identifier):</p>
+<pre class="smalltalk"><code>(BioSequence newRNA: &#39;AUGGCCAUUGUAAUGGGCCGCUGAAAGGGUGCCCGAUAG&#39; ) translateWithTableId: 2.
+&quot; a BioSequence(13) ([ACDEFGHIKLMNPQRSTVWY] IUPAC -&gt; Protein) [MAIVMGRWKGAR*]&quot;</code></pre>
+<p>Warning: After you select another translation table, the selection remains until you otherwise specify other table. To see which table is currently selected evaluate:</p>
+<pre class="smalltalk"><code>BioCodonTables currentCodonTable </code></pre>
+<p>which in our last example should answer:</p>
+<pre class="smalltalk"><code> &quot; a BioCodonTable [2] a Dictionary(&#39;AAA&#39;-&gt;&#39;K&#39; &#39;AAC&#39;-&gt;&#39;N&#39; &#39;AAG&#39;-&gt;&#39;K&#39; &#39;AAU&#39;-&gt;&#39;N&#39; &#39;ACA&#39;-&gt;&#39;T&#39; &#39;ACC&#39;-&gt;&#39;T&#39; &#39;ACG&#39;-&gt;&#39;T&#39; &#39;ACU&#39;-&gt;&#39;T&#39; &#39;AGC&#39;-&gt;&#39;S&#39; &#39;AGU&#39;-&gt;&#39;S&#39; &#39;AUA&#39;-&gt;&#39;M&#39; &#39;AUC&#39;-&gt;&#39;I&#39; &#39;AUG&#39;-&gt;&#39;M&#39; &#39;AUU&#39;-&gt;&#39;I&#39; &#39;CAA&#39;-&gt;&#39;Q&#39; &#39;CAC&#39;-&gt;&#39;H&#39; &#39;CAG&#39;-&gt;&#39;Q&#39; &#39;CAU&#39;-&gt;&#39;H&#39; &#39;CCA&#39;-&gt;&#39;P&#39; &#39;CCC&#39;-&gt;&#39;P&#39; &#39;CCG&#39;-&gt;&#39;P&#39; &#39;CCU&#39;-&gt;&#39;P&#39; &#39;CGA&#39;-&gt;&#39;R&#39; &#39;CGC&#39;-&gt;&#39;R&#39; &#39;CGG&#39;-&gt;&#39;R&#39; &#39;CGU&#39;-&gt;&#39;R&#39; &#39;CUA&#39;-&gt;&#39;L&#39; &#39;CUC&#39;-&gt;&#39;L&#39; &#39;CUG&#39;-&gt;&#39;L&#39; &#39;CUU&#39;-&gt;&#39;L&#39; &#39;GAA&#39;-&gt;&#39;E&#39; &#39;GAC&#39;-&gt;&#39;D&#39; &#39;GAG&#39;-&gt;&#39;E&#39; &#39;GAU&#39;-&gt;&#39;D&#39; &#39;GCA&#39;-&gt;&#39;A&#39; &#39;GCC&#39;-&gt;&#39;A&#39; &#39;GCG&#39;-&gt;&#39;A&#39; &#39;GCU&#39;-&gt;&#39;A&#39; &#39;GGA&#39;-&gt;&#39;G&#39; &#39;GGC&#39;-&gt;&#39;G&#39; &#39;GGG&#39;-&gt;&#39;G&#39; &#39;GGU&#39;-&gt;&#39;G&#39; &#39;GUA&#39;-&gt;&#39;V&#39; &#39;GUC&#39;-&gt;&#39;V&#39; &#39;GUG&#39;-&gt;&#39;V&#39; &#39;GUU&#39;-&gt;&#39;V&#39; &#39;UAC&#39;-&gt;&#39;Y&#39; &#39;UAU&#39;-&gt;&#39;Y&#39; &#39;UCA&#39;-&gt;&#39;S&#39; &#39;UCC&#39;-&gt;&#39;S&#39; &#39;UCG&#39;-&gt;&#39;S&#39; &#39;UCU&#39;-&gt;&#39;S&#39; &#39;UGA&#39;-&gt;&#39;W&#39; &#39;UGC&#39;-&gt;&#39;C&#39; &#39;UGG&#39;-&gt;&#39;W&#39; &#39;UGU&#39;-&gt;&#39;C&#39; &#39;UUA&#39;-&gt;&#39;L&#39; &#39;UUC&#39;-&gt;&#39;F&#39; &#39;UUG&#39;-&gt;&#39;L&#39; &#39;UUU&#39;-&gt;&#39;F&#39; ) &quot;</code></pre>
+<p>To set the default codon table, evaluate:</p>
+<pre class="smalltalk"><code>BioCodonTables currentCodonTable: BioCodonTables defaultCodonTable </code></pre>
+<p></p>
+<h2 id="alphabets">Alphabets</h2>
+<h3 id="international-union-of-pure-and-applied-chemistry-iupac">International Union of Pure and Applied Chemistry (IUPAC)</h3>
+<p>IUPAC is one of the many non-governmental organizations composing the International Council for Science. In practice, for the bioinformatician, serves as a &quot;standard&quot; for the naming of the chemical elements and compounds.</p>
+<p>Amongst other nomenclatures, in bioinformatics the <em>IUPAC codes</em> usually identify amino acids and nucleotide bases. These codes can consist of either one letter code or a three letter code. For example DNA letters are A, G, C, T bases, which compose the DNA Alphabet. Alphabets are used to determine the contents of a sequence, because simple String(s) are not enough. Consider the following sequence:</p>
+<pre class="smalltalk"><code>&#39;GTCG&#39;</code></pre>
+<p>it could be interpreted as:</p>
+<ul>
+<li>A DNA fragment of Guanine,Thymine,Cytosine and Guanine.</li>
+<li>A Peptide with Glycine, Threonine, Cysteine and Glycine.</li>
+</ul>
+<p>the solution is to disambiguate specifying the correct Alphabet objects when appropriate.</p>
+<p>Alphabets classes are located under the <strong>BioAlphabet</strong> class hierarchy. To access the ambiguous alphabets just ask to the IUPAC albhabet abstract class:</p>
+<pre class="smalltalk"><code>BioIUPACAlphabet ambiguousAlphabets. --&gt; an OrderedCollection(BioIUPACAmbiguousRNA BioIUPACAmbiguousDNA)</code></pre>
+<p>The following script displays the alphabet letters available in the IUPAC specific classes:</p>
+<pre class="smalltalk"><code>BioIUPACAmbiguousDNA codes --&gt; ACGTWSMKRYBDHVN
+BioIUPACAmbiguousRNA codes --&gt; GAUCRYWSMKHBVDN
+BioIUPACAmbiguousDNA ambiguityCodes --&gt; WSMKRYBDHVN
+BioIUPACAmbiguousRNA ambiguityCodes --&gt; RYWSMKHBVDN
+BioIUPACUnambiguousDNA codes --&gt; GATCN
+BioIUPACUnambiguousRNA codes --&gt; GAUC
+BioIUPACDNAExtended codes --&gt; GATCBDSW
+BioIUPACProtein codes --&gt; ACDEFGHIKLMNPQRSTVWY
+BioIUPACProteinExtended codes --&gt; ACDEFGHIKLMNPQRSTVWYBXZJUO
+BioNullAlphabet codes --&gt; -</code></pre>
+<p>Notice however the IUPAC encoding lacks of symbols for termination, gap (<code>-</code>), or selenocysteine.</p>
+<p>Create and display sequence objects guessing the alphabet:</p>
+<pre class="smalltalk"><code>| sequence |
+sequence := &#39;atcggtcggctta&#39; asSequence.
+sequence alphabet.
+
+sequence := &#39;gccuacau&#39; asSequence.
+sequence alphabet.</code></pre>
+<p></p>
+<h2 id="sequence-records">Sequence Records</h2>
+<p><strong>BioSeqRecord</strong> stores a sequence with additional information, which could be &quot;annotations&quot; or sequence features. You can think of a <em>Sequence Record</em> like a wrapper for a <strong>BioSequence</strong> to attach additional information to a sequence. Equivalent classes in other Bio tookits are Bio::Sequence for BioRuby and Bio.SeqRecord for Biopython. In a sequence record usually the #id method is used to store an unique identifier such as the Accession Number (a <strong>BioAccession</strong>), and the #name is used to hold a <strong>String</strong> with a more descriptive name, such as clone name. The #description method is used to set up a <strong>String</strong> with a textual, i.e. human readable, description of the sequence.</p>
+<p>A sequence record responds to the #annotations message to retrieve the sequence annotations. Such message will answer a Smalltalk <strong>Dictionary</strong>, however, if you need to customize the annotations you may subclass <strong>BioSeqRecord</strong> and override #annotationsClass method to answer a different kind of <strong>Dictionary</strong>.</p>
+<p>Creating a <strong>BioSeqRecord</strong>:</p>
+<pre class="smalltalk"><code>| sequence |
+sequence := BioSequence newProtein: &#39;mdstnvrsgmksrkkkpkttvidddddcmtcsacqslkllndfas&#39;.
+(BioSeqRecord new: sequence)
+        id: &#39;P20994.1&#39;;
+        name: &#39;P20994&#39;;
+        description: &#39;Protein A19&#39;;
+        dbxRefs: #(&#39;Pfam:PF05077&#39; &#39;InterPro:IPR007769&#39; &#39;DIP:2186N&#39;);
+        annotationAt: #note put: &#39;A simple note&#39;;
+        yourself.</code></pre>
+<p>Mostly you would want to iterate over a collection of sequences with metadata information, and populate Sequence Records with annotations and features. Some Bio* libraries use to parse a GenBank file (.gbk) which is a textual format intended to be read by humans (even when there exists for years programming utilities like Entrez E-Utils to retrieve information in a machine-readable format). One format which is easier to parse, is the XML format, and the following example retrieves a XML-formatted file with annotations, which are then stored in BioSeqRecord objects:</p>
+<p><em>Work in progress</em></p>
+<pre class="smalltalk"><code>&#39;seq_records.xml&#39;</code></pre>
+<p>To access sequence features, the following methods are available:</p>
+<ul>
+<li>sequenceFeatures, sequenceFeatures: Answer or set a <strong>Collection</strong> the receiver's sequence <strong>BioSequenceFeature</strong>s.</li>
+<li>addSeqFeature: Add a <strong>BioSequenceFeature</strong> passed as parameter, to the receiver's sequence.</li>
+<li>removeSeqFeature: Remove a <strong>BioSequenceFeature</strong> passed as parameter, to the receiver's sequence.</li>
+</ul>
+<p>Simirarily, to access sequence annotations and per-letter annotations, the following methods are used:</p>
+<ul>
+<li>annotations, annotations: Answer or set a <strong>Collection</strong> the receiver's sequence <strong>BioSeqAnnotations</strong>s.</li>
+<li>annotationsAt:put: At a key first parameter, add a <strong>Collection</strong> with the receiver's annotations for the sequence.</li>
+<li>removeAnnotations : Completely remove all the annotations from the receiver.</li>
+<li>removeAnnotationsAt: Remove annotation passed as parameter from the receiver.</li>
+<li>letterAnnotations, letterAnnotations: Answer or set a <strong>Collection</strong> with the receiver's per-letter annotations.</li>
+<li>letterAnnotationsAt:put: At a key first parameter, add a value <strong>Collection</strong> with the receiver's per-letter annotation for the sequence. The collection passed as parameter must match the length of the receiver's sequence length.</li>
+<li>removeLetterAnnotations : Completely remove all the letter annotations from the receiver.</li>
+</ul>
+<p></p>
+<h2 id="repetitive-sequences">Repetitive sequences</h2>
+<p>There are several types of <a href="https://en.wikipedia.org/wiki/Repeated_sequence_%28DNA%29">repetitive DNA sequences</a>, and multiple ways of classify them, for example according to their function, their processes or structure. They are often seen as mobile genetic elements which have been replicated in a genome by inserting new copies of themselves into different positions. Some types of repetitive DNA segments, also known as &quot;DNA fingerprints&quot;, are useful for identifying individuals in crime forensics, as genetic markers in linkage analysis and population studies.</p>
+<p>The root class for accessing repetitive sequences is <strong>BioRepeatSequence</strong>, and the following subsections explore the possibilities of BioSmalltalk with repetitive sequences. In the next sections, in sequences considered to be repeated, the repeat units are called &quot;motif&quot;.</p>
+<h3 id="interspersed-repeats.">Interspersed repeats.</h3>
+<p>Also known as Transposon-Derived Repeats, interspersed repeats can be defined as repetitive sequences dispersed throughout the genome as single units flanked by unique sequence. The could be divided between &quot;Transposable DNA&quot; and &quot;Non-Transposable DNA&quot;. At the same time the Transposable DNA, could be subdivided in &quot;DNA transposons&quot; and &quot;Retrotransposons&quot; both of them are going to be described in the context of usage with the BioSmalltalk library.</p>
+<h4 id="dna-transposons">DNA transposons</h4>
+<p>Also referred as &quot;fossil&quot; DNA elements (as far it is known, DNA transposons are not active anymore in humans), they are the simplest repetitive sequences and represent mobile DNA elements that transpose to new sites directly as DNA. They encode for an enzyme called &quot;transposase&quot; in a process named conservative transposition. An example of an actual DNA transposon <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC326035/pdf/nar00357-0345.pdf">found</a> in <em>c.elegans</em> in 1983, is this sequence of 1610 bp:</p>
+<pre class="smalltlak"><code>BioDNATransposon new
+    name: &#39;C.elegans Tc1 transposable element&#39;;
+    motif: &#39;CAGTGCTGGCCAAAAAGATATCCACTTTTGGTTTTTTGTGTGTAACTTTTTTCTCAAGCATCCATTTGACTTGAA
+TTTTTCCGTGTGCATAAAGCGAAATGTTACGCAAATTTGCGGACCAAACATTACATGATTATCGATTTTTTCTGAATTTTATTTCAA
+TTTTTTGATTTTTTCGTTTTTCCAATTTTCATTATTTTTTTTGAATTATCAATAAAACGCACTCTGTTTGTTGCACTGGATTTGTTT
+GGTTGATAAATTATTTTTAAGGTATGGTAAAATCTGTTGGGTGTAAAAATCTTTCCTTGGACGTCAAGAAAGCCATTGTAGCTGGCT
+TCGAACAAGGAATACCCACGAAAAGCTCGCGCTGCAAATTCAACGTTCTCCGTCGACTATTTGGAAAGTAATCAAGAAGTACCAAAC
+TGAGGTGAGTTCGAAAAATATTATTTTTTAATAATAAATGTTTAGAAATCCGTCGCTTTGAGAATCTCGCCCGGCAGGCCTCGAGTG
+ACAACCCATAGGATGGATCGCAACATCCTCCGATCAGCAAGAGAAGATCCGCATAGGACCGCCACGGATATTCAAATGATTATAAGT
+TCTCCAAATGAACCTGTACCAAGTAAACGAACTGTTCGTCGACGTTTACAGCAAGCAGGCTACACGGACGAAAGCCAGTCAAGAAAC
+CGTTCATCAGTAAGAAAAATCGCATGGCTCGAGTTGCGTGGGCAAGCGCATCTTCGTTGGGGACGTCAGGAATGGGCTAACACATCT
+GGTCTGACGAAGCAATTCATTTGTTCGGGAGTGATGGAAATTCCTGGGTACGTCGTCCTGTTGGCTCTAGGTACTCTCCAAAGTATC
+AATGCCCAACCGTTAAGCATGGAGGTGGGAGCGTCATGGTGTGGGGTGCTTCACCAGCACTTCCATGGGCCCACTAAGAGATCCAAA
+CATTATGGATCGTTTTCAATACGAAAACATCTTTGAAACTACAATGCGACCCTGGGCACTTCAAAATGTGGGCCGTGGCTTCGTGTT
+TCAGCAGGATAACGATCCTAGCATACTTCTCTTCATGTGCGTTCATGGTTTCAACGTCGTCATGTGCATTTGCTCGATTGGCCAGTC
+AGTCTCCGGACTTGATCCATAGAGCATTTGTGGGAAGGTTGGJUAGCGTCTTGGAGGTATTCGGGCTTCAAATGCAGATGCCAAATT
+CAACCAGTTGGAAAACGCTTGGAAAGCTATCCCCATGTCAGTTATTCACAAGCTGATCGACTCGATGCCACGTCGTTGTCAAGCTGT
+TATTGATGCAAACGGATACGCGACAAAGTATTAAGCATAATTATGTTGTTTTTAAATCCAATTGCTCATATTCCGGTACTTTAATTG
+TCATTTCCTTGCAACCTCGGTTTTTTCAATATTTCTAGTTTTTCGATTTTGAATTTTTCTGAAGTTTTTTCAAAATCTGTTGAACAT
+TTTTGATGAATATTGTGTTTTTAGATTTTGTGAACACTGTGGTGAAGTTTCAAAACAAATAACCACTTAGAAAAAGTTACACACAAA
+AAACCAAAAGTGGATATCTTTTGGCCAGCACTG&#39;;
+    repeats: 30 &quot; Bristol genome &quot;
+    yourself.</code></pre>
+<h3 id="tandem-repeat-sequences">Tandem repeat sequences</h3>
+<p>If the copies of a sequence motif lie adjacent to each other in a block, or an array, we are speaking about <strong>tandem repeats</strong>. There are three types of Tandem Repeat DNA or &quot;Satellite DNA&quot;:</p>
+<ul>
+<li>Common &quot;Satellite DNA&quot;</li>
+<li>Microsatellites (or STR)</li>
+<li>Minisatellites.</li>
+</ul>
+<p>Both Minisatellites and STR's are also called VNTRs because the number of repeats in a given satellite varies among individuals.</p>
+<h4 id="microsatellites">Microsatellites</h4>
+<p>Also known as STR (Short Tandem Repeats) or SSR (Simple Sequence Repeats), microsatellites are nuclear DNA sequences with fewer than 5 base pairs. In BioSmalltalk we use the microsatellite definition at the US National Library of Medicine Medical Subject Headings (MeSH) considering a STR sequence to be from 2 to 5 base pairs long. STRs are used as genetic markers and population studies, to study gene duplication or deletion.</p>
+<p>Microsatellites can be classified in several ways, for example by their repetition pattern (or motif type):</p>
+<ul>
+<li>Perfect: Uninterrupted repeats: ----TATATATA-----</li>
+<li>Imperfect: Interrupted by non-repeat nucleotides: ----TATATA--TATATA----TATA</li>
+<li>Compound: Two or more STRs are found adjacent to one another: ---AGAGAGTAGATAGATAGA---</li>
+<li>Complex: ----GAGAGA----AATAATAATAAT---</li>
+</ul>
+<p>And also could be classified also by the number of base pairs:</p>
+<ul>
+<li>Mono-nucleotide: AAAAAAA</li>
+<li>Di-nucleotides: CACACACA</li>
+<li>Tri-nucleotides: TTATTATTATTA</li>
+<li>Tetra-nucleotides: GATAGATAGATA</li>
+<li>Penta-nucleotides: GTCAAGTCAAGTCAAGTCAA</li>
+<li>Hexa-nucleotides: ACGGTAACGGTAACGGTA</li>
+</ul>
+<p>The following expression creates a Microsatellite sequence of 2 base pairs and 5 repeat motif, and prints its representation as an expanded sequence:</p>
+<pre class="smalltalk"><code>(BioSTRSequence new 
+    motif: &#39;AT&#39;;
+    repeats: 5;
+    yourself) asString.</code></pre>
+<p>Setting a motif also performs a range check. If the provided motif size is fewer or larger than the allowed by the class, an exception is raised.</p>
+<p>One can also create an instance of a Microsatellite by writing as a String:</p>
+<pre class="smalltalk"><code>&#39;(AT)5&#39; asBioSTRSequence</code></pre>
+<h4 id="minisatellites">Minisatellites</h4>
+<p>A minisatellite is a DNA region (or locus) made up of short repeated sequences of at least 10 base pairs, according to the US National Library of Medicine Medical Subject Headings (MeSH). Minisatellites share much of the same properties as Microsatellites, and could be instantiated using a similar pattern:</p>
+<pre class="smalltalk"><code>BioMinisatellite new 
+    motif: &#39;TGCGCCATTGTAGCCA&#39;;
+    repeats: 3;
+    yourself.</code></pre>
+<h4 id="satellite-dna">Satellite DNA</h4>
+<p>Classical satellite DNA consists of repeats larger than minisatellites, with sizes between 100 and 6500 base pairs. The class to access satellite DNA is <strong>BioSatelliteSequence</strong>.</p>
+<h3 id="segmental-duplications">Segmental duplications</h3>
+<p>Segmental duplications are blocks which may consist of 1000 kb to 200,000 kb of nucleotide pairs that are also present at two or more sites in the genome. Specifically in a chromosome (intrachromosomal) or another chromosome (interchromosomal), usually in subtelomeric regions.</p>
+<p><em>Work in progress</em></p>
+<h2 id="panels-of-markers">Panels of Markers</h2>
+<p>Panels or markers are used for routine use in species parentage testing and identification. BioSmalltalk provide classes for accessing information about recommended panels of markers. The root class for the hierarchy of panels is <strong>BioPanel</strong>. Subclasses implements specific panels including class methods for particular species. For example the class <strong>BioFAOPanel</strong> is used to access a panel of loci recommended by the <em>Food and Agriculture Organization of the United Nations (FAO)</em> for genetic studies of domestic animals. Also a class for the panel marker information provided by the <em>International Society for Animal Genetics (ISAG)</em> is available in the class <strong>BioISAGPanel</strong>.</p>
+<p>The markers information could be accessed using the following methods:</p>
+<pre class="smalltalk"><code>BioFAOPanel markerAlleleRangesForCattle.
+BioISAGPanel markerAlleleRangesForCattle.</code></pre>
+<p>answering a <strong>Collection</strong> of <strong>BioLocus</strong>, each one representing a position in a chromosomal location.</p>
+<p>The marker allele ranges along with its positions in both cases could be accessed as:</p>
+<pre class="smalltalk"><code>BioFAOPanel markerAlleleRangesForCattle.
+BioISAGPanel markerAlleleRangesForCattle.</code></pre>
+<p>Each panel should implement the method #markersForSpecies, providing a <strong>Dictionary</strong> of names of supported species, with its associated method. Also each class provides a method for determining which types of markers (STR, Minisatellite, etc.) are supported by the panel. For example display the markers available for the ISAG Panel answer its marker associated class:</p>
+<pre class="smalltalk"><code>BioISAGPanel supportedMarkerTypes &quot; #(#BioSTRSequence) &quot;</code></pre>
+<h3 id="microsatellites-and-minisatellites-locus">Microsatellites and Minisatellites Locus</h3>
+<p>BioSmalltalk can use sequences with locis through the <strong>BioLocus</strong> class which is used to represent &quot;static&quot; or unvariable information about a microsatellite or minisatellite. A locus is used by <strong>BioSTRSequence</strong> or <strong>BioMinisatelliteSequence</strong> respectively. In the following examples we are using as reference the Cattle STR information accessible at <a href="http://www.cstl.nist.gov/biotech/strbase/cattleSTRs.htm" class="uri">http://www.cstl.nist.gov/biotech/strbase/cattleSTRs.htm</a>. Specifically we are going to set up the BM1818 loci through code. A microsatellite locus can have a simple or a compound repeat structure. You can set this with the proper message sends:</p>
+<pre class="smalltalk"><code>BioLocus
+    name: &#39;BM1818&#39;;
+    chrLocation: &#39;D23S21&#39;;
+    beSimpleRepeat;
+    yourself</code></pre>
+<p></p>
+<h2 id="reading-and-writing-sequences">Reading and Writing Sequences</h2>
+<p></p>
+<h3 id="reading-fasta-records">Reading FASTA records</h3>
+<p>The following script count letters for each fasta record in the 'Fasta_example_1.fa' file included in the BioSmalltalk distribution. The file contains multiple fasta records which are parsed and iterated collecting the numbers of letters for each record.</p>
+<pre class="smalltalk"><code>| mFasta fPath |
+
+fPath := BioObject testFilesFullDirectoryName , &#39;Fasta_example_1.fa&#39;.
+mFasta := BioParser parseMultiFasta: (BioFASTAFile on: fPath) contents.
+mFasta collect: #occurrencesOfLetters</code></pre>
+<p>And of course the output is not nice for the human eye:</p>
+<pre class="smalltalk"><code> an OrderedCollection(a Dictionary($A-&gt;24 $C-&gt;18 $G-&gt;25 $T-&gt;23 ) a Dictionary($A-&gt;33 $C-&gt;30 $G-&gt;23 $T-&gt;34 ) a Dictionary($A-&gt;25 $C-&gt;30 $G-&gt;15 $T-&gt;39 ) a Dictionary($A-&gt;17 $C-&gt;9 $G-&gt;19 $T-&gt;15 ) a Dictionary($A-&gt;26 $C-&gt;17 $G-&gt;36 $T-&gt;41 ) a Dictionary($A-&gt;8 $C-&gt;4 $G-&gt;11 $T-&gt;31 ) a Dictionary($A-&gt;31 $C-&gt;16 $G-&gt;17 $T-&gt;22 ) a Dictionary($A-&gt;16 $C-&gt;14 $G-&gt;15 $T-&gt;25 ) a Dictionary($A-&gt;14 $C-&gt;20 $G-&gt;11 $T-&gt;21 ) a Dictionary($A-&gt;20 $C-&gt;29 $G-&gt;25 $T-&gt;41 ) a Dictionary($A-&gt;12 $C-&gt;14 $G-&gt;8 $T-&gt;26 ) a Dictionary($A-&gt;26 $C-&gt;8 $G-&gt;11 $T-&gt;24 ) a Dictionary($A-&gt;36 $C-&gt;37 $G-&gt;16 $T-&gt;36 ) a Dictionary($A-&gt;30 $C-&gt;30 $G-&gt;33 $T-&gt;27 ) a Dictionary($A-&gt;14 $C-&gt;11 $G-&gt;13 $T-&gt;20 ) a Dictionary($A-&gt;34 $C-&gt;31 $G-&gt;20 $T-&gt;27 ) a Dictionary($A-&gt;23 $C-&gt;31 $G-&gt;29 $T-&gt;37 ) a Dictionary($A-&gt;30 $C-&gt;42 $G-&gt;25 $T-&gt;31 ) a Dictionary($A-&gt;7 $C-&gt;23 $G-&gt;5 $T-&gt;18 ) a Dictionary($A-&gt;15 $C-&gt;28 $G-&gt;6 $T-&gt;18 ) a Dictionary($A-&gt;23 $C-&gt;44 $G-&gt;12 $T-&gt;37 ))</code></pre>
+<p>Suppose we want to display the output in CSV format. Each object could be formatted for CSV by implementing #outputAsCsvTo: aStream. Then modifying the script:</p>
+<pre class="smalltalk"><code>| mFasta filePath |
+
+filePath := BioObject testFilesFullDirectoryName , &#39;Fasta_example_1.fa&#39;.
+mFasta := BioParser parseMultiFasta: (BioFASTAFile on: filePath) contents.
+BioCSVFormatter new exportFrom: (mFasta collect: #occurrencesOfLetters).</code></pre>
+<p>It is possible to get a timestamped file like &quot;CSVOutput3536647736.csv&quot; with contents like this:</p>
+<pre class="smalltalk"><code>A;24
+G;25
+C;18
+T;23
+
+A;33
+G;23
+C;30
+T;34
+
+A;25
+G;15
+C;30
+T;39
+
+...</code></pre>
+<p></p>
+<h2 id="genomes">Genomes</h2>
+<h3 id="downloading-genomes">Downloading Genomes</h3>
+<p>The BioGenomeDownloader hierarchy is a facility to download latest builds of genomes. Although downloading of any organism is supported, BioSmalltalk includes subclasses which implements methods with parameters for specific organisms. The current release of BioSmalltalk includes downloaders for:</p>
+<ul>
+<li>Bos Taurus</li>
+<li><ul>
+<li>From the UMD, Center for Bioinformatics and Computational Biology, University of Maryland.</li>
+</ul></li>
+<li><ul>
+<li>From The Bovine Genome Sequencing Consortium.</li>
+</ul></li>
+<li>Gallus Gallus (International Chicken Genome Sequencing Consortium).</li>
+<li>Mus Musculus (Celera Genomics and Genome Reference Consortium).</li>
+<li>Other genome downloaders could be built by just specializing very few methods.</li>
+</ul>
+<p>As downloading whole chromosomes or genomes is usually a long process, all downloads are performed in a background process inside the virtual image. Results are downloaded by default in the directory where the virtual .image and .changes files are located. You may configure which file formats to download by sending the following messages:</p>
+<ul>
+<li>setDownloadASN1 : ASN.1 format files</li>
+<li>setDownloadFasta : FASTA format files</li>
+<li>setDownloadGBK : GenBank flat file format (annotation + sequence)</li>
+<li>setDownloadGBS : GenBank summary file format (annotation only)</li>
+<li>setDownloadMFA : Masked FASTA file format</li>
+</ul>
+<p>An example to download <em>Bos Taurus</em> chromosomes from 20 to 24 follows:</p>
+<pre class="smalltalk"><code>BioBTauUMD new downloadChromosomes: (20 to: 24).</code></pre>
+<p>To download the whole entire genome for <em>Mus musculus</em> you could use the following expression:</p>
+<pre class="smalltalk"><code>BioMMusculusGRCm downloadAllChromosomes.</code></pre>
+<p>Downloading of any organisms is supported by setting respective parameters (for which you should connect to the FTP site and observe the directory and file names) :</p>
+<pre class="smalltalk"><code>BioGenomeDownloader new
+    setDownloadFasta;
+    organismName: &#39;Monodelphis_domestica&#39;;
+    version: &#39;5&#39;;
+    fileListPrefix: &#39;mdm_ref_MonDom&#39;;
+    beChrFileNotZeroPrefixed;
+    downloadChromosomes: (7 to: 8).`</code></pre>
+<p>Besides the download progress bar, progress could also be monitorized through the Process Browser:</p>
+<div class="figure">
+<img src="images\ProcessBrowserGD.jpg" alt="Pharo Smalltalk Process Browser" />
+<p class="caption">Pharo Smalltalk Process Browser</p>
+</div>
+<p></p>
+<h1 id="parsing">Parsing</h1>
+<h2 id="about-parsing">About parsing</h2>
+<p>Parsing is one of the most important part of developing software in Bioinformatics. Parsing is a process by which a developer makes sense of a sentence (acting as input data, usually a <strong>String</strong>), usually by breaking it down into letters or words.</p>
+<p>A parser is an object that scans an input <strong>String</strong>, decomposes it into its constituent parts (which you may define), and then optionally processes the parts in some suitable manner.</p>
+<p>Programming literature usually refer to writing a parser <em>by hand</em> when you write a parser without any support programming library. Currently taking such approach is rare and not recommended (because keeping track of contingencies caused by different inputs and input paths is extremely difficult), so developers usually use a parser generator, i.e. a software library, and write rules for such generator.</p>
+<p></p>
+<h2 id="xml-parsing-modes">XML parsing modes</h2>
+<p>One of the major file formats in Bioinformatics is XML. XML is a widely supported machine-friendly format much easier to parse than the error-prone processing of hardly structured ASCII format (intended for human reading). Also, another huge advantage of XML is that it constitutes a stack or building block upon which other related technologies has been developed such as XSLT, XML Schema, DocBook, XQuery, XPath, XQL, XPHIL, and others.</p>
+<p>Under the XML core building block, there are several types of parsers used against a XML formatted file:</p>
+<ul>
+<li>Tree Parser: This is what you will read everywhere as the &quot;DOM parser&quot;</li>
+<li>Event Parser: This is denoted by S*X and could be -- SAX Parser: Known as the &quot;Push parser&quot; -- StAX Parser: Known also too as the &quot;Pull parser&quot;</li>
+<li>VTD Parser : This is known as &quot;Virtual Token Descriptor&quot;</li>
+</ul>
+<p>Note: as far as I know currently there is no VTD parser for Smalltalk. This is the most usual classification of XML Parsers:</p>
+<p>There are several other classifications depending of the parser characteristics and what you want to do or how. You may be interested in making modifications or just processing, for which the following classification would make more sense:</p>
+<ul>
+<li>For modifications: The parser creates long-lived representations from the XML document (necessary for modifications): You should choose DOM or VTD -- Do you <em>need</em> to query or modify the objects (parser creates nodes): DOM -- You do not need the objects (parser creates integers and locations caches): VTD</li>
+<li>For processing: The parser doesn't creates long-lived objects: SAX or StAX.</li>
+</ul>
+<p>or, if you are interested in the type of access to XML nodes, the following &quot;taxonomy&quot; could serve:</p>
+<ul>
+<li>Back-and-forth: Access the data after the parsing is complete: DOM or VTD</li>
+<li>Massive or very frequent access: Choose DOM</li>
+<li>Rare or simple access: Choose VTD</li>
+<li>Sequential: Access the data while you're processing the document: SAX or StAX</li>
+<li>Processing all tokens: SAX</li>
+<li>Processing interested tokens (allows skipping forward): StAX</li>
+</ul>
+<h2 id="parsing-xml-files">Parsing XML files</h2>
+<p></p>
+<h2 id="parsing-in-biosmalltalk">Parsing in BioSmalltalk</h2>
+<p>BioSmalltalk uses different libraries to simplify and enable parsing of the many formats out there in the Bioinformatics arena. The libraries used are:</p>
+<ul>
+<li>Support for parsing XML format in DOM or SAX mode.</li>
+<li>XMLPullParser for parsing XML in StAX mode.</li>
+<li>PetitParser for parsing formatted or structured text.</li>
+</ul>
+<p>The libraries are already installed and tested in BioSmalltalk.</p>
+<p></p>
+<h2 id="parsing-sequences">Parsing Sequences</h2>
+<p>For example, finding if a given <strong>String</strong>, like 'TCGTACGA', is actually a DNA sequence you just evaluate:</p>
+<pre class="smalltalk"><code>#dnaSequence asParser matches: &#39;TCGTACGA&#39;.  --&gt; true
+#dnaSequence asParser matches: &#39;TCGTZZZACGA&#39;.  --&gt; false</code></pre>
+<p>And for parsing:</p>
+<pre class="smalltalk"><code>#dnaSequence asParser parse: &#39;TCGTACGA&#39;. --&gt; &#39;TCGTACGA&#39;
+#dnaSequence asParser parse: &#39;TCGTA3344CGA&#39;. --&gt; end of input expected at 5</code></pre>
+<p>The #asParser method actually instantiates a parser, which is then sent the message #matches: to test the given input.</p>
+<p>Another common way to use the existing parsers is through the <strong>BioParser class</strong>. In BioSmalltalk we have two modes of parsing: Tokenize and Parse. The tokenize messages always answer a Collection-like object containing other collections or primitive Smalltalk objects (this is, something like #('object1' 'object2') or 1234, 74.32, true, etc.), while the parse messages answer <strong>BioObject</strong>'s.</p>
+<p>You may want BioObjects if you need to keep working with the resulting bio-objects from your parsing. Or to learn relationships between BioObjects.</p>
+<p>You may work with primitive Smalltalk objects like <strong>Integers</strong> or <strong>Strings</strong> if you want &quot;cheap&quot; objects.</p>
+<h2 id="parsing-accession-numbers">Parsing Accession Numbers</h2>
+<p>An accession number is a unique sequential number assigned to each record (sequence) in a repository. This number allows for tracking of different versions of a sequence record and the associated sequence over time. Parsing an accession number answers a very simple object which you may use to store or index separatedly from its sequence, thus, reducing storage space and processing time. To parse an accession number:</p>
+<pre class="smalltalk"><code>BioParser parseAccession: &#39;CAF97855.1&#39; --&gt;  a BioAccession CAF97855 1</code></pre>
+<p>You may also query if the accession number is versioned:</p>
+<pre class="smalltalk"><code>(BioParser parseAccession: &#39;CAF97855.1&#39;) isVersioned --&gt; true</code></pre>
+<p>And query the version number:</p>
+<pre class="smalltalk"><code>(BioParser parseAccession: &#39;CAF97855.1&#39;) version --&gt; &#39;1&#39;</code></pre>
+<p>Another shortcut for the same message is #asAccession</p>
+<pre class="smalltalk"><code>&#39;XP_425521.2&#39; asAccession version --&gt; &#39;2&#39;</code></pre>
+<h2 id="parsing-fasta-files">Parsing FASTA files</h2>
+<p>This is how to parse a FASTA file with multiple sequences:</p>
+<pre class="smalltalk"><code>BioParser parseMultiFasta: (BioFASTAFile on: &#39;my_sequencesHM.fasta&#39;) contents.</code></pre>
+<p>Given a header, split its identifiers:</p>
+<pre class="smalltalk"><code>BioParser tokenizeFastaHeader: &#39;&gt;gi|198282148|ref|NC_011206.1| Acidithiobacillus ferrooxidans ATCC 53993 chromosome, complete genome&#39;.
+
+&quot;  #(&#39;&gt;gi&#39; &#39;198282148&#39; &#39;ref&#39; &#39;NC_011206.1&#39; &#39;Acidithiobacillus ferrooxidans ATCC 53993 chromosome, complete genome&#39;) &quot;</code></pre>
+<p>Print in the Transcript each sequence description with its sequence size from a FASTA String:</p>
+<pre class="smalltalk"><code>| fastaString |
+
+fastaString := &#39;&gt;gi|2765658|emb|Z78533.1|CIZ78533 C.irapeanum 5.8S rRNA gene and ITS1 and ITS2 DNA
+CGTAACAAGGTTTCCGTAGGTGAACCTGCGGAAGGATCATTGATGAGACCGTGGAATAAACGATCGAGTG
+AATCCGGAGGACCGGTGTACTCAGCTCACCGGGGGCATTGCTCCCGTGGTGACCCTGATTTGTTGTTGGG
+CCGCCTCGGGAGCGTCCATGGCGGGTTTGAACCTCTAGCCCGGCGCAGTTTGGGCGCCAAGCCATATGAA
+AGCATCACCGGCGAATGGCATTGTCTTCCCCAAAACCCGGAGCGGCGGCGTGCTGTCGCGTGCCCAATGA
+ATTTTGATGACTCTCGCAAACGGGAATCTTGGCTCTTTGCATCGGATGGAAGGACGCAGCGAAATGCGAT
+AAGTGGTGTGAATTGCAAGATCCCGTGAACCATCGAGTCTTTTGAACGCAAGTTGCGCCCGAGGCCATCA
+GGCTAAGGGCACGCCTGCTTGGGCGTCGCGCTTCGTCTCTCTCCTGCCAATGCTTGCCCGGCATACAGCC
+AGGCCGGCGTGGTGCGGATGTGAAAGATTGGCCCCTTGTGCCTAGGTGCGGCGGGTCCAAGAGCTGGTGT
+TTTGATGGCCCGGAACCCGGCAAGAGGTGGACGGATGCTGGCAGCAGCTGCCGTGCGAATCCCCCATGTT
+GTCGTGCTTGTCGGACAGGCAGGAGAACCCTTCCGAACCCCAATGGAGGGCGGTTGACCGCCATTCGGAT
+GTGACCCCAGGTCAGGCGGGGGCACCCGCTGAGTTTACGC
+
+&gt;gi|2765657|emb|Z78532.1|CCZ78532 C.californicum 5.8S rRNA gene and ITS1 and ITS2 DNA
+CGTAACAAGGTTTCCGTAGGTGAACCTGCGGAAGGATCATTGTTGAGACAACAGAATATATGATCGAGTG
+AATCTGGAGGACCTGTGGTAACTCAGCTCGTCGTGGCACTGCTTTTGTCGTGACCCTGCTTTGTTGTTGG
+GCCTCCTCAAGAGCTTTCATGGCAGGTTTGAACTTTAGTACGGTGCAGTTTGCGCCAAGTCATATAAAGC
+ATCACTGATGAATGACATTATTGTCAGAAAAAATCAGAGGGGCAGTATGCTACTGAGCATGCCAGTGAAT
+TTTTATGACTCTCGCAACGGATATCTTGGCTCTAACATCGATGAAGAACGCAGCTAAATGCGATAAGTGG
+TGTGAATTGCAGAATCCCGTGAACCATCGAGTCTTTGAACGCAAGTTGCGCTCGAGGCCATCAGGCTAAG
+GGCACGCCTGCCTGGGCGTCGTGTGTTGCGTCTCTCCTACCAATGCTTGCTTGGCATATCGCTAAGCTGG
+CATTATACGGATGTGAATGATTGGCCCCTTGTGCCTAGGTGCGGTGGGTCTAAGGATTGTTGCTTTGATG
+GGTAGGAATGTGGCACGAGGTGGAGAATGCTAACAGTCATAAGGCTGCTATTTGAATCCCCCATGTTGTT
+GTATTTTTTCGAACCTACACAAGAACCTAATTGAACCCCAATGGAGCTAAAATAACCATTGGGCAGTTGA
+TTTCCATTCAGATGCGACCCCAGGTCAGGCGGGGCCACCCGCTGAGTTGAGGC
+&#39;.
+
+(BioParser parseMultiFasta: fastaString) do: [ : seqRecord |
+                Transcript
+                        show: seqRecord name; cr;
+                        show: seqRecord size; cr; cr ]</code></pre>
+<h1 id="alignments">Alignments</h1>
+<p>Underlying sequences are in a BioAlignment are sequence based (contrary to String based). This could enable to access track information like quality score through the alignment itself, instead of maintaining multiple associated matrices.</p>
+<p><em>Creating a Multiple Sequence Alignment</em></p>
+<pre class="smalltalk"><code>    align := BioAlignment new.
+    align 
+        addSequence: &#39;ACTGCTAGCTAG&#39;;
+        addSequence: &#39;ACT-CTAGCTAG&#39;;
+        addSequence: &#39;ACTGCTAGATAG&#39;;
+        addSequence: &#39;ACTGCTTGCTAG&#39;;
+        addSequence: &#39;ACTGCTTGATAG&#39;.        </code></pre>
+<p></p>
+<h1 id="blast">BLAST</h1>
+<p>Provided by the National Center for Biotechnology Information (NCBI), BLAST is a sequence homology search program that finds all the sequences that match a particular given sequence from a database. The NCBI-GenBank database contains over 150 billion nucleotide bases as of June 2013, and doubling its contents approximately every 18 months. It is considered the most fundamental tool in bioinformatics today, although there are many other similar programs for different cases. In BioSmalltalk you may query programmatically a BLAST at NCBI with the following parameters:</p>
+<ul>
+<li>Query the nucleotide (nr) database.</li>
+<li>Use an &quot;unknown&quot; DNA sequence.</li>
+<li>Get only the first 200 hits.</li>
+<li>Filter query sequence with low compositional complexity.</li>
+<li>Use the default expect value (10).</li>
+<li>Use the BLASTN programs to search nucleotide databases using a nucleotide query.</li>
+<li>Get the results in XML for further querying</li>
+</ul>
+<p>which is translated as:</p>
+<p><em>Make a BLAST from BioSmalltalk</em></p>
+<pre class="smalltalk"><code>| search |
+search := BioNCBIWebBlastWrapper new nucleotide
+        query: &#39;TCGAAATAACGCGTGTTCTCAACGCGGTCGCGCAGATGCCTTTGCTCATC
+AGATGCGACCGCAACCACGTCCGCCGCCTTGTTCGCCGTCCCCGTGCCTC
+AACCACCACCACGGTGTCGTCTTCCCCGAACGCGTCCCGGTCAGCCAGCC
+TCCACGCGCCGCGCGCGCGGAGTGCCCATTCGGGCCGCAGCTGCGACGGT
+GCCGCTCAGATTCTGTGTGGCAGGCGCGTGTTGGAGTCTAAA&#39;;
+        hitListSize: 200;
+        filterLowComplexity;
+        expectValue: 10;
+        blastn;
+        formatTypeXML;
+        fetch.</code></pre>
+<p>Now the &quot;search&quot; object contains a BioWebBlastResult. The following line write the XML contents to a timestamped file in the directory where the .image file is located:</p>
+<pre class="smalltalk"><code>search outputToFile: &#39;blast-&#39; , BioObject currentSeconds , &#39;.xml&#39;.      </code></pre>
+<p>''Note: When the Transcript is opened (Tools --&gt; Transcript) you may view a detailed log of message sends.''</p>
+<p></p>
+<h1 id="entrez">Entrez</h1>
+<p>The Entrez API is an interface for accessing to the Entrez Utilities provided by the NCBI.</p>
+<h2 id="entrez-examples">Entrez Examples</h2>
+<h3 id="fasta-record-from-protein">FASTA record from Protein</h3>
+<ul>
+<li>Input: Accession number</li>
+<li>Database: Protein</li>
+<li><p>Output: FASTA record</p>
+<pre class="smalltalk"><code>(BioEntrezClient new protein
+    term: &#39;NP_031402.3&#39;;
+    useWebEnv;
+    setFasta;                       
+    fetch) outputToFile: &#39;NP_031402.3.fasta&#39;</code></pre></li>
+</ul>
+<h3 id="seqid-record-from-protein">SeqID record from Protein</h3>
+<ul>
+<li>Input: Accession number</li>
+<li>Database: Protein</li>
+<li><p>Output: SeqID</p>
+<pre class="smalltalk"><code>(BioEntrezClient new protein
+    term: &#39;NP_031402.3&#39;;
+    useWebEnv;
+    setSeqId;                       
+    fetch) outputToFile: &#39;NP_031402.3.seqid&#39;</code></pre></li>
+</ul>
+<h3 id="genbank-records-from-nuccore">GenBank records from Nuccore</h3>
+<ul>
+<li>Input: List of UIDs</li>
+<li>Database: Nuccore</li>
+<li><p>Output: GenBank formatted file (.gb)</p>
+<pre class="smalltalk"><code>(BioEntrezClient new nuccore
+    uids: #(57240072 57240071 6273287 6273291 6273290 6273289 6273286 6273285 6273284);
+    setGb;
+    fetch) outputToFile: &#39;fetchNuccore3.gb&#39;</code></pre></li>
+</ul>
+<h3 id="xml-records-from-pubmed">XML records from Pubmed</h3>
+<ul>
+<li>Input: List of UIDs</li>
+<li>Database: Pubmed</li>
+<li><p>Output: XML</p>
+<pre class="smalltalk"><code>| result |
+result := BioEntrezClient new pubmed 
+            uids: #( 11877539 11822933 );
+            setModeXML;
+            fetch.
+result outputToFile: &#39;eFetch1.xml&#39;</code></pre></li>
+</ul>
+<h3 id="xml-records-from-protein">XML records from Protein</h3>
+<ul>
+<li>Input: Search terms</li>
+<li>Database: Protein</li>
+<li><p>Output: List of UIDs in XML</p>
+<pre class="smalltalk"><code>(BioEntrezClient new protein
+    term: &#39;insulin AND homo&#39;;
+    search) outputToFile: &#39;insulin AND homo_protein.xml&#39;</code></pre></li>
+</ul>
+<p></p>
+<h1 id="swiss-prot-and-expasy">Swiss-Prot and ExPASy</h1>
+<p></p>
+<h2 id="pdb">PDB</h2>
+<p></p>
+<h2 id="pdbepisa">PDBePISA</h2>
+<p>BioSmalltalk includes an API to access the service provided by the EBI: Protein Data Bank in Europe : Proteins, Interfaces, Structures and Assemblies tool (Krissinel and Henrick, 2007). This tool can help in the analysis of the protein–protein interfaces within structures, search for related protein structures, verify the reliability of the models interfaces, find the interactions between the ligand and receptor proteins, and other <a href="http://www.ebi.ac.uk/msd-srv/prot_int/pistart.html">set of related features</a>.</p>
+<p>To search inside the PDBePISA server you should provide a list of PDB codes, each one represented by 4-letter Protein Databank (PDB) identifier, as parameter of the method #pdbCodes:.</p>
+<p>Inside BioSmalltalk, hightlight the following expression and bring the contextual menu to Inspect or Explore the results:</p>
+<pre class="smalltalk"><code>BioPDBePISAClient new interfaces
+    pdbCodes: { &#39;3gcb&#39; . &#39;1sar&#39; };
+    fetch.</code></pre>
+<p>You can also download the results in the XML format provided by the PDBePISA.</p>
+<pre class="smalltalk"><code>(BioPDBePISAClient new interfaces
+    pdbCodes: { &#39;3onz&#39; . &#39;1d66&#39; };
+    fetch) dumpToFileNamed: &#39;fetchPdbEPisa_01.xml&#39;</code></pre>
+<p>To further filter results, you can use the XML parser provided by BioSmalltalk. The following code includes two PDB entries, which instead of downloading directly into a file, we can parse.</p>
+<pre class="smalltalk"><code>(BioPDBePISAClient new interfaces
+    pdbCodes: { &#39;3gcb&#39; . &#39;1sar&#39; };
+    fetch)</code></pre>
+<p></p>
+<h1 id="wrappers">Wrappers</h1>
+<p>A wrapper is a Smalltalk class built around an external software, which is assumed to be already installed in the system and usually executed by typing through command-line (cmd.exe, bash, ksh, etc.). In other words, a wrapper could expand on what another object (the wrappee) does. Issuing command line parameters is a typo prone process, specially for command line programs with many options. To prevent such situation, BioSmalltalk includes a set of classes for accessing bioinformatics software, which lets use messages to configure program parameters and use the full power of object technology, i.e. use iterators like do:, collect:, select: and others around these wrappers, save executed wrappers instances for future usage, support multiple software versions transparently, this is, using the same code regardless which version is installed in a host, and include additional parameter validations, among many others.</p>
+<p>The common root class for wrappers is <strong>BioWrapperObject</strong>. This means that any subclass can be queried for the following properties:</p>
+<ul>
+<li>availablePlatforms: Answer a <Collection> of <String> with receiver's supported platforms.</li>
+<li>platformCheck: Answer <true> if receiver can be executed in the current platform.</li>
+<li>releases: Answer a <Collection> of <String> each representing a binary name version of the receiver.</li>
+<li>softwareName: Answer a <String> with the receiver's friendly or known name.</li>
+<li>url: Answer a <String> representing receiver's URL</li>
+</ul>
+<p>Additionally, each subclass may contain example methods ready to be executed from the Class Browser.</p>
+<p>The following subsections includes examples for wrappers already included in BioSmalltalk.</p>
+<p></p>
+<h1 id="population-genetics">Population Genetics</h1>
+<p>Population genetics is the study of genetic variation, specifically the allele frequency changes, in a population, as the population is subject to the four main evolutionary processes: natural selection, genetic drift, mutation and gene flow. It also takes into account the factors of recombination, population subdivision and population structure.</p>
+<p></p>
+<h2 id="plink">PLINK</h2>
+<p>The PLINK wrapper exists in at least two variants. One for working with the 1.07 version (class BioPLINK1Wrapper) and another one for working with the &quot;2&quot; version (actually 1.9, class BioPLINK2Wrapper).</p>
+<h3 id="wrapper-execution">Wrapper execution</h3>
+<h4 id="file-format-conversions">File format conversions</h4>
+<p>Make a binary pedigree file (.BED):</p>
+<pre class="smalltalk"><code>| samplesDir |
+
+samplesDir := BioPLINK2Wrapper testFilesFullDirectoryName.
+BioPLINK2Wrapper new
+    file: (samplesDir / &#39;sample_ped&#39;) fullName;
+    out: &#39;sample_out&#39;;
+    makeBed;
+    execute.</code></pre>
+<p>Transpose to output .TPED and .TFAM files:</p>
+<pre class="smalltalk"><code>| samplesDir |
+
+samplesDir := BioPLINK2Wrapper testFilesFullDirectoryName.
+BioPLINK2Wrapper new
+    file: (samplesDir / &#39;sample_ped&#39;) fullName;
+    out: &#39;sample_out&#39;;
+    transpose;
+    execute.</code></pre>
+<p>To get out numeric alleles:</p>
+<pre class="smalltalk"><code>| samplesDir |
+
+samplesDir := BioPLINK2Wrapper testFilesFullDirectoryName.
+BioPLINK2Wrapper new
+    file: (samplesDir / &#39;sample_ped&#39;) fullName;
+    out: &#39;sample_out&#39;;
+    recode12;
+    execute.</code></pre>
+<h4 id="basic-filters">Basic filters</h4>
+<p>To get out specific chromosome excluding individuals with genotyping error &gt; 5% (or call rate at least of 95%):</p>
+<pre class="smalltalk"><code>| samplesDir |
+
+samplesDir := BioPLINK2Wrapper testFilesFullDirectoryName.
+BioPLINK2Wrapper new
+    file: (samplesDir / &#39;sample_ped&#39;) fullName;
+    out: &#39;sample_out&#39;;
+    chr: 23;
+    mind: 0.5;
+    execute.</code></pre>
+<p>Combining filters in one pass:</p>
+<pre class="smalltalk"><code>| samplesDir |
+
+samplesDir := BioPLINK2Wrapper testFilesFullDirectoryName.
+BioPLINK2Wrapper new
+    file: (samplesDir / &#39;sample_ped&#39;) fullName;
+    out: &#39;sample_out&#39;;
+    chr: 23;
+    mind: 0.5;
+    geno: 0.1;
+    maf: 0.05;
+    execute.</code></pre>
+<h4 id="advanced-filters">Advanced filters</h4>
+<h5 id="splitting-a-genome-ped-by-chromosome.">Splitting a genome PED by chromosome.</h5>
+<p>This script generates N files according to the number of chromosomes if non-human data is used, using the provided species parameter (cow, dog, horse, mouse, etc). The list of supported organisms is currently available at: <a href="https://www.cog-genomics.org/plink/1.9/input#chr_set" class="uri">https://www.cog-genomics.org/plink/1.9/input#chr_set</a></p>
+<pre class="smalltalk"><code>| samplesDir |
+
+samplesDir := BioPLINK2Wrapper testFilesFullDirectoryName.
+BioPLINK2Wrapper new
+    file: (samplesDir / &#39;sample_ped&#39;) fullName;
+    out: &#39;sample_out&#39;;
+    cow;
+    geno: 0.1;
+    execSplitChrs</code></pre>
+<h5 id="splitting-by-family-ids">Splitting by family IDs</h5>
+<p>This filter requires to specify a <strong>Collection</strong> with valid families in your data set.</p>
+<pre class="smalltalk"><code>| samplesDir |
+
+samplesDir := BioPLINK2Wrapper testFilesFullDirectoryName.
+BioPLINK2Wrapper new
+    bfile:  (samplesDir / &#39;sample_ped&#39;) fullName;
+    out:  (samplesDir / &#39;sample_bed_fams&#39;) fullName;
+    keepFams: #(&#39;4304&#39; &#39;7319&#39; &#39;6968&#39;);
+    makeBed;
+    execute.</code></pre>
+<p></p>
+<h3 id="reading-plink-pedmap-files">Reading PLINK (PEDMAP) files</h3>
+<p>BioSmalltalk includes a simple utility to browse and select PED/MAP files. You can use it for your projects and launch it by evaluating:</p>
+<pre class="smalltalk"><code>BioPEDMAPFilesLoader open.</code></pre>
+<div class="figure">
+<img src="images\BioPEDMAP_FilesLoader_1.jpg" alt="Opening the PEDMAP loader" style="width:50.0%" />
+<p class="caption">Opening the PEDMAP loader</p>
+</div>
+<p>The window will require mandatory population name, a .PED and .MAP files to be selected.</p>
+<p>Once opened, you can browse to your PED/MAP files and click Load to perform an action.</p>
+<div class="figure">
+<img src="images\BioPEDMAP_FilesLoader_2.jpg" alt="Selecting MAP file" style="width:75.0%" />
+<p class="caption">Selecting MAP file</p>
+</div>
+<p>Which action is performed by default? If no action was specified, then the Load button will close the PED/MAP loader and return an Association with the file name of the selected .PED file as key, and the name of the .MAP file as value. The answered directory name will have a system dependent path separator (e. g. / for Unix) appended:</p>
+<pre class="smalltalk"><code>&quot;&#39;C:\BioSmalltalk\BioSmalltalkTestFiles\pedmap\sample_ped.ped&#39;-&gt;&#39;C:\BioSmalltalk\BioSmalltalkTestFiles\pedmap\sample_ped.map&#39;&quot; </code></pre>
+<p>You can also specify which action to realize after the Load button gets clicked. The action block in the following code acts as a callback, receiving two String parameters: The PED file name and the MAP file name</p>
+<pre class="smalltalk"><code>BioPEDMAPFilesLoader open
+    actionBlock: [ : pedFilename : mapFilename | &quot;...&quot; ]</code></pre>
+<h3 id="forcing-reference-alleles">Forcing reference alleles</h3>
+<p>A key step in preparing files for other software packages (such as LAMP-LD) is to add proper reference alleles information to data set, to ensure allele coding consistency. The inconsistency problem is relevant when merging multiple datasets from different experiments or platforms.</p>
+<p>The following script adds a reference allele file to avoid allele coding discordance:</p>
+<pre class="smalltalk"><code>BioPLINK2Wrapper new
+    inputFile: &#39;&#39;;
+    outputFilename: &#39;&#39;;
+    referenceAlleles: &#39;allele_A.txt&#39;;
+    makeBed;
+    execute.</code></pre>
+<p></p>
+<h2 id="shapeit">ShapeIt</h2>
+<h3 id="input-preparation">Input preparation</h3>
+<p>ShapeIt is a fast and accurate method for estimation of haplotypes (a.k.a. phasing) from a set of SNP genotypes (.ped format or its .bed/.bim/.fam binary version) and a genetic map (.map format), and produces as output, either a single set of estimated haplotypes, or a haplotype graph that encapsulates the uncertainty about the underlying haplotypes. The software is currently only available in Unix-like OS. ShapeIt2 outputs a pair .haps (IMPUTE2 format) and .sample files.</p>
+<h3 id="wrapper-execution-1">Wrapper execution</h3>
+<p>To use the wrapper the program binary must be in the system PATH environment variable and all input files, being binarized PLINK (bed, bim, fam) or textual PLINK (ped, map) must have the same name. You may query which ShapeIt releases are available in the current BioSmalltalk version by evaluating:</p>
+<pre class="smalltalk"><code>BioShapeIt2Wrapper releases</code></pre>
+<p>Each resulting element represents a Class which can be used to execute a specific software version. The following expression launches ShapeIt2 from BioSmalltalk, setting several parameters such as:</p>
+<ul>
+<li>The number of burn-in MCMC iterations</li>
+<li>The input file name (without extension),</li>
+<li>The output file name for the best haplotypes</li>
+<li>The number of threads to use the multi-threading capabilities</li>
+</ul>
+<pre class="smalltalk"><code>BioShapeIt2WrapperR727 new
+ burn: 10;
+ inputBinarized: &#39;input_brangus&#39;;
+ outputMax: &#39;output_brangus&#39;;
+ thread: 8;
+ execute</code></pre>
+<p>You can also explicitly specify the PEDMAP files as parameters:</p>
+<pre class="smalltalk"><code>BioShapeIt2WrapperR644 new
+ burn: 10;
+ inputTextual: &#39;input_brangus.ped&#39;;
+ inputMap: &#39;input_brangus.map&#39;;
+ outputMax: &#39;output_brangus&#39;;
+ thread: 8;
+ execute</code></pre>
+<p></p>
+<h2 id="lamp-ld">LAMP-LD</h2>
+<p>BioLAMPLD is a package which includes several classes for working with the LAMP-LD software for doing inference of locus-specific ancestry in recently admixed populations. LAMP-LD is currently available only for Unix/Linux systems.</p>
+<h3 id="input-preparation-1">Input preparation</h3>
+<p>The LAMP-LD package includes a class for writing the admixed genotype sample file (.geno or .gen) which contains genotype data for the problem population.</p>
+<pre class="smalltalk"><code>BioLAMPLDGenotypeFormatter new 
+    bimFilePath: &#39;file.bim&#39;;
+    pedFilePath: &#39;file.ped&#39;;
+    export.</code></pre>
+<h3 id="wrapper-execution-2">Wrapper execution</h3>
+<p>The main class for interacting with LAMP-LD is BioLAMPLDWrapper which <strong>replace</strong> the need to run the perl script run_LAMPLD.pl provided by LAMP-LD software. The wrapper can be executed for a single or a range of window size(s).</p>
+<p>The wrapper automatically adds the positional parameters in the order expected by LAMP-LD, which enables the user to send the configuration messages in any order. Adding ancestry population files (.hap) requires to provide a positive Integer with the population order through #addPopFile:atOrder:</p>
+<p>Usage example for 2-way populations with a single window size (50) :</p>
+<pre class="smalltalk"><code>| samplesDir |
+
+samplesDir := BioLAMPLDWrapper testFilesFullDirectoryName / &#39;2-way&#39;.
+BioLAMPLDWrapper new
+    unolanc2way;
+    windowSize: 50;
+    nrFounders: 2;
+    positionsFile:  (samplesDir / &#39;chr.pos&#39;) fullName;
+    addPopFile:     (samplesDir / &#39;pop1.hap&#39;) fullName atOrder: 1;
+    addPopFile:     (samplesDir / &#39;pop2.hap&#39;) fullName atOrder: 2;
+    genosFile:      (samplesDir / &#39;genofile.gen&#39;) fullName;
+    outputFile:     &#39;lamp-ld_example1.out&#39;;
+    execute.</code></pre>
+<p>To execute for several window sizes, say from 30 to 150, you can specify an <strong>Interval</strong> instance :</p>
+<pre class="smalltalk"><code>| samplesDir |
+    
+samplesDir := BioLAMPLDWrapper testFilesFullDirectoryName / &#39;2-way&#39;.
+BioLAMPLDWrapper new
+    unolanc2way;
+    windowSizes: (30 to: 150);
+    nrFounders: 2;
+    positionsFile:  (samplesDir / &#39;chr.pos&#39;) fullName;
+    addPopFile:     (samplesDir / &#39;pop1.hap&#39;) fullName atOrder: 1;
+    addPopFile:     (samplesDir / &#39;pop2.hap&#39;) fullName atOrder: 2;  
+    genosFile:      (samplesDir / &#39;genofile.gen&#39;) fullName;
+    executeWS.</code></pre>
+<p></p>
+<h2 id="hmmer">HMMER</h2>
+<p>To test if the HMMER wrapper is working properly for your platform evaluate:</p>
+<pre class="smalltalk"><code>BioHMMERWrapper new 
+        help; 
+        execute.</code></pre>
+<p>Successfull execution should answer a BioResultObject with results:</p>
+<div class="figure">
+<img src="images\Inspector_BioResultObject.jpg" alt="BioResultObject inspector on HMMER execution" style="width:70.0%" />
+<p class="caption">BioResultObject inspector on HMMER execution</p>
+</div>
+<p>Now this is translated code from the HMMER tutorial:</p>
+<pre class="smalltalk"><code>| samplesDir hmmFile stoFile fastaFile outputFile |
+
+samplesDir := BioObject testFilesFullDirectoryName.
+&quot; hmmbuild globins4.hmm tutorial/globins4.sto &quot;
+hmmFile := samplesDir , &#39;globins4.hmm&#39;.
+stoFile :=  samplesDir , &#39;globins4.sto&#39;.
+BioHMMERWrapper new
+        addParameter: hmmFile;
+        addParameter: stoFile;
+        runHmmBuild;
+        execute.
+
+&quot; hmmsearch globins4.hmm uniprot sprot.fasta &gt; globins4.out &quot;
+fastaFile := samplesDir , &#39;globins45.fa&#39;.
+outputFile :=  samplesDir , &#39;globins4.out&#39;.
+BioHMMERWrapper new
+        runHmmSearch;
+        addParameter: hmmFile;
+        addParameter: fastaFile;
+        addOption: &#39;o&#39; value: outputFile;
+        execute.</code></pre>
+<p></p>
+<h2 id="phyx">Phyx</h2>
+<p><em>Work in progress</em></p>
+<h1 id="phylogenetics">Phylogenetics</h1>
+<p>Phylogenetics use genetic variation between species and populations (taxa) to infer evolutionary relationships.</p>
+<h2 id="nexus-file-format">Nexus File Format</h2>
+<h2 id="newick-file-format">Newick File Format</h2>
+<p>Newick is a file format used for representing phylogenetic trees in computer-readable form. In contrast to Nexus files they contain no further syntax elements or other information than the trees. representing rooted trees with labled nodes and specified lengths between parent and child</p>
+<ul>
+<li>Trees are represented as an annotated nested list of node names</li>
+<li>Node names are a letter optionally followed by more letters, digits or an underline</li>
+<li>Node names can be followed by a length separated from the name by a colon. For example (ant:17, (bat:31, cow:22):7, dog:22, (elk:33, fox:12):40);</li>
+<li>Optionally one can label internal nodes. For example: ((cow:12, gnu:10)bigThings:3, (ant:23, bat:19)smallThings:5);</li>
+<li>Officially the tree ends in a semicolon (redundant since the parens must balance)</li>
+<li>The standard also does not allow length for the distance for a line leading to the root since this has no meaning in the context of plylogeny</li>
+<li>http://biopython.org/DIST/docs/api/</li>
+</ul>
+<p></p>
+<h1 id="clustering">Clustering</h1>
+<p></p>
+<h1 id="graphics">Graphics</h1>
+<p>Graphics are built and rendered using the <a href="http://www.objectprofile.com">Roassal agile visualization engine</a>, which is already installed in the BioPharo distribution. The Roassal engine includes a large set of examples using short Smalltalk expressions.</p>
+<p></p>
+<h2 id="dotplots">DotPlots</h2>
+<p>A simple visualization for the comparison of two sequences (or one sequence against itself) is <a href="https://en.wikipedia.org/wiki/Dot_plot_%28bioinformatics%29">DotPlot</a> , which provides an overview of the extent of similarity between sequences without diving into details. DotPlots operates by projecting two sequences to be compared along the horizontal and vertical axis of a Matrix. DotPlots requires three main parameters:</p>
+<ul>
+<li>A &quot;Word Size&quot;, which is a <strong>Number</strong> representing the length of the identical polynucleotide or polypeptide that must be found in both sequences in order to generate a dot on the chart. The bigger the word size, the lower is the probability that the same segment is present in both sequences.</li>
+<li>A &quot;Scoring Scheme&quot;, specified as a <strong>Matrix</strong>. The simplest scoring scheme is the Identity Matrix, but others can be used, for example the EMBOSS DNA scoring matrix. Other extended matrix is used when sequences contain ambiguity codes, or using proteins.</li>
+<li>A &quot;Threshold&quot; or &quot;cut-off score&quot;.</li>
+</ul>
+<p>When plotting mummer output, it is necessary to use the lengths of the input sequences to set the plot ranges, otherwise the plot will be automatically scaled around the minimum and maximum data points. Additionally, any character or symbol that does not belong to the [a-zA-Z] set is ignored.</p>
+<p><em>Drawing a 2D DotPlot with two random sequences</em></p>
+<pre class="smalltalk"><code>BioRTDotPlot 
+    x: BioSequence atRandom y: BioSequence atRandom;
+    window: 3;
+    threshold: 2;
+    open.</code></pre>
+<p><em>Drawing a 2D DotPlot for single analysis (identify repeats in a sequence)</em></p>
+<pre class="smalltalk"><code>BioRTDotPlot
+        sequence: BioSequence atRandom;
+        window: 3;
+        threshold: 2;
+        open.
+    open.</code></pre>
+<p></p>
+<h2 id="bar-charts">Bar Charts</h2>
+<p><em>Under construction, please contact mailing list to collaborate.</em></p>
+<p></p>
+<h2 id="histograms">Histograms</h2>
+<p>Histograms are frequently used to get an overview of quantitative distributions. Examples where histograms are applied are: Distribution of codon usage, sequence lengths distribution, etc.</p>
+<p><em>Drawing a histogram of a FASTA file with multiple sequences</em></p>
+<pre class="smalltalk"><code>(BioParser parseMultiFastaFile: BioObject testFilesDirectoryName asFileReference / &#39;ls_orchid.fasta&#39;) 
+    plotHistogramBins: 20 
+    xAxisLabel: &#39;Sequence lengths (bp)&#39;
+    yAxisLabel: &#39;Count&#39; 
+    color: Color red</code></pre>
+<p></p>
+<h1 id="widgets">Widgets</h1>
+<p>BioSmalltalk includes widgets to provide user interfaces. These utilities are small re-usable windows which could be easily integrated into your applications.</p>
+<h2 id="chromosome-selection">Chromosome Selection</h2>
+<p>A small utility to select organisms and their chromosomes for posterior analysis. Each organism has already configured their corresponding list of chromosomes.</p>
+<pre class="smalltalk"><code>BioChrSelector open.</code></pre>
+<div class="figure">
+<img src="images\BioCHR_Selector_1.jpg" alt="Selecting MAP file" style="width:75.0%" />
+<p class="caption">Selecting MAP file</p>
+</div>
+<h2 id="csv-explorer">CSV Explorer</h2>
+<p>The BioCSVExplorer class builds a widget that allow users to visually explore a CSV file and import its contents to the image.</p>
+<p><em>Work in progress</em></p>
+<h2 id="matrix-explorer">Matrix Explorer</h2>
+<p><em>Work in progress</em></p>
+<p></p>
+<h1 id="third-party-libraries">Third Party Libraries</h1>
+<p>This section includes description of libraries not specific to &quot;Bio&quot; tasks, but useful for development of any software utility.</p>
+<h2 id="persistency">Persistency</h2>
+<p>All current Pharo images includes Fuel, a fast binary serializer that defines a pickle format based on clustering similar objects. It reduces deserialization overhead compared to other approaches. It supports class shape changing (when a variable has been added, or removed, or its index changed), cyclic object graphs, serialization of several special objects like <strong>CompiledMethod</strong> (in a binary way, without compiling code) and Classes, etc.</p>
+<p></p>
+<h2 id="mathematics">Mathematics</h2>
+<p>The package <em>Numerical Methods</em> includes common numerical algorithms implemented in Smalltalk. The package library is documented in the free downloadable book <a href="https://github.com/SquareBracketAssociates/NumericalMethods">Object-Oriented Implementation of Numerical Methods. An Introduction with Smalltalk</a> , which covers all the available algorithms:</p>
+<ul>
+<li>Interpolation: Lagrange, Newton, Neville, Bulirsch-Stoer, Cubic Spline.</li>
+<li>Iterative algorithms</li>
+<li>Integration methods: Trapeze, Simpson, Romberg.</li>
+<li>Series: Infinite Series, Continued Fractions, etc.</li>
+<li>Linear Algebra: Vectors, Matrices, Linear Equations, LUP decomposition, Eigenvalues and Eigenvectors.</li>
+<li>Distributions: Normal, Gamma, etc.</li>
+<li>Statistical Tests: Chisquare-test, F-test, T-test, Linear Regression, Maxi</li>
+<li>mum Likelihood, etc.</li>
+<li>Optimization: Hill Climbing, Powell, Simplex, Genetic, etc.</li>
+</ul>
+<p></p>
+<h2 id="os-communication">OS Communication</h2>
+<p>The package OSProcess provides access to operating system functions, including pipes and child process creation. It is implemented using pluggable primitives in a shared library for Unix or Linux, and a DLL for Windows. The Smalltalk code, including the classes which implement pluggable primitives for Unix or Win32 operating system functions, may be loaded into any Squeak image, but the primitives are only useful on Unix and Windows systems. Placeholder classes are provided for MacOS, OS/2 and RiscOS, but are not yet implemented.</p>
+<p>CommandShell is a Smalltalk implementation of a command processor shell and terminal window. It is intended to behave like to a simple terminal window (like xterm) running a Unix command shell (like /bin/sh). It lacks some elements of Unix shell syntax, and does not provide terminal emulation, but it adds some nice Smalltalk enhancements such as a text editor which works in a command pipeline, and the ability to evalute Smalltalk expressions in a command pipeline with unix commands.</p>
+<p></p>
+<h1 id="developing-biosmalltalk">Developing BioSmalltalk</h1>
+<h2 id="code-organization">Code Organization</h2>
+<h3 id="user-code-organization">User Code Organization</h3>
+<p>At this point, you probably have your own scripts and wonder how to maintain your source code. You have several choices, depending on what is your task on course:</p>
+<h4 id="the-script-manager">The Script Manager</h4>
+<p>The Script Manager is a script browser tool developed by Torsten Bergman which enables to organize your scripts. It allows to have multiple workspaces organized by categories and within each category, to name scripts, execute, save and export them. It also supports syntax highlighting and autocompletion. Unfortunately the tool was removed from official Pharo images, but you can install it through the Catalog Browser:</p>
+<div class="figure">
+<img src="images\ScriptManager_Install.jpg" alt="Installing the Script Manager" style="width:50.0%" />
+<p class="caption">Installing the Script Manager</p>
+</div>
+<p>To open the tool, go to &quot;Tools&quot; -&gt; &quot;ScriptManager&quot;</p>
+<div class="figure">
+<img src="images\ScriptManager_Usage.jpg" alt="Using the Script Manager" style="width:50.0%" />
+<p class="caption">Using the Script Manager</p>
+</div>
+<p></p>
+<h4 id="the-nautilus-bio-browser">The Nautilus Bio Browser</h4>
+<p>To facilitate working with Bio API, all the library classes are grouped in the System Browser:</p>
+<div class="figure">
+<img src="images\BioCHB_NautilusGroup.jpg" alt="Browsing the BioSmalltalk Classes" style="width:100.0%" />
+<p class="caption">Browsing the BioSmalltalk Classes</p>
+</div>
+<p></p>
+<h3 id="developer-code-organization">Developer Code Organization</h3>
+<p>Packages are organized in the following way:</p>
+=1.8mm
+
+<p></p>
+<h2 id="building-from-source">Building from Source</h2>
+<p>To build an image from source you will need at least wget or curl to download a Pharo clean image. In all cases, the following instructions creates a BioSmalltalk directory and download a clean Pharo image. Packages are fetched from SmalltalkHub, although there are plans to migrate source code to GitHub. You can build the BioSmalltalk image in two ways: Interactive or non-interactive.</p>
+<h4 id="non-interactive-building-in-windows">Non-interactive building in Windows</h4>
+<p>It is highly recommendable to download and install MSYS Shell from the MinGW project. Additionally, you should install the msys-wget, msys-zip and msys-unzip packages from the MinGW Package Manager.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">mkdir</span> /c/BioSmalltalk
+<span class="kw">cd</span> /c/BioSmalltalk
+<span class="kw">wget</span> -O- get.pharo.org/50+vm <span class="kw">|</span> <span class="kw">bash</span> -
+<span class="kw">./pharo</span> Pharo.image config <span class="st">&quot;http://smalltalkhub.com/mc/hernan/BioSmalltalk&quot;</span> <span class="st">&quot;ConfigurationOfBioSmalltalk&quot;</span> --printVersion --install=development</code></pre></div>
+<h4 id="non-interactive-building-in-gnulinux">Non-interactive building in GNU/Linux</h4>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">mkdir</span> /usr/local/src/BioSmalltalk
+<span class="kw">cd</span> /usr/local/src/BioSmalltalk
+<span class="kw">wget</span> -O- get.pharo.org/50+vm <span class="kw">|</span> <span class="kw">bash</span> -
+<span class="kw">./pharo</span> Pharo.image config <span class="st">&quot;http://smalltalkhub.com/mc/hernan/BioSmalltalk&quot;</span> <span class="st">&quot;ConfigurationOfBioSmalltalk&quot;</span> --printVersion --install=development</code></pre></div>
+<h4 id="interactive-building">Interactive Building</h4>
+<p>Interactive building enables you to view the installation progress and to live debug installation problems. You should start the image from command line, and execute a Smalltalk installer script. To start the Pharo image evaluate:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">./pharo</span> Pharo.image <span class="kw">&amp;</span></code></pre></div>
+<p>One inside Smalltalk, you can evaluate the installer using Gofer or Metacello. Gofer is an API on top of <a href="http://www.wiresong.ca/monticello/v1/docs/">Monticello</a>, a package system of Smalltalk. Both Gofer and Monticello are preinstalled in current Pharo images. The following script uses Gofer:</p>
+<pre class="smalltalk"><code>Gofer it
+  smalltalkhubUser: &#39;hernan&#39; project: &#39;BioSmalltalk&#39;;
+  configurationOf: &#39;BioSmalltalk&#39;;
+  loadDevelopment</code></pre>
+<p>Metacello is a newer cross-smalltalk package management system. Supports named versioning, dependencies, metadata, conditional package loading and other features.</p>
+<pre class="smalltalk"><code>Metacello new
+    smalltalkhubUser: &#39;hernan&#39; project: &#39;PhyloclassTalk&#39;;
+    configuration: &#39;PhyloclassTalk&#39;;
+    version: #development;
+    load.</code></pre>
+<p></p>
+<h2 id="testing">Testing</h2>
+<p>Testing is the evaluation of your developed software product. Being Smalltalk the technology where the original testing framework was invented (SUnit), writing comprehensive tests is a traditionally important part of the package validation process.</p>
+<p>A rapid and excellent introduction to Unit Testing in Smalltalk can be found in the Stéphane Ducasse article: SUnit Explained Revisited <a href="http://www.cs.pdx.edu/~black/OOP/papers/SUnitEnglish2.pdf" class="uri">http://www.cs.pdx.edu/~black/OOP/papers/SUnitEnglish2.pdf</a>. A tutorial about testing is beyond the scope of this guide, however I would like to introduce some issues about the nature of test writing before starting to write tests:</p>
+<ul>
+<li>Assume the presence of errors, always.</li>
+<li>It’s impossible, generally, to find all errors.</li>
+<li>Test to find errors, not to show that it works.</li>
+<li>Not finding errors doesn’t mean that your software doesn’t contain errors.</li>
+<li>A successful test run discovers errors!</li>
+<li>Write for both valid and invalid conditions.</li>
+</ul>
+<p>More useful advices are found in the Pharo By Example book: <a href="http://pharobyexample.org/" class="uri">http://pharobyexample.org/</a></p>
+<h3 id="executing-tests">Executing Tests</h3>
+<p>You can execute tests by selecting the method you want to test in the Browser:</p>
+<div class="figure">
+<img src="images\TestRunning_1.jpg" alt="Selecting method to be tested" style="width:100.0%" />
+<p class="caption">Selecting method to be tested</p>
+</div>
+<p>Once clicked, if the test pass the icon will be displayed in green color.</p>
+<div class="figure">
+<img src="images\TestRunning_2.jpg" alt="Executing a test on a method" style="width:100.0%" />
+<p class="caption">Executing a test on a method</p>
+</div>
+<h3 id="writing-tests">Writing Tests</h3>
+<p>These are guidelines for writing tests in BioSmalltalk. Eventually they will be mandatory.</p>
+<ul>
+<li>All test classes should inherit from <strong>BioAbstractTest</strong> class</li>
+<li>Tests should be in the “testing” method category</li>
+<li>Tests selectors should start with the prefix “test”.</li>
+</ul>
+<h3 id="test-data">Test Data</h3>
+<h4 id="including-your-own-test-data-set">Including your own test data set:</h4>
+<p>Each BioSmalltalk distribution must include a &quot;BioSmalltalkTestFiles&quot; subdirectory (from now the “test files subdirectory”) to place all the files used for the test suites.</p>
+<ul>
+<li>If you want to include data sets in your tests, then place them as files in this subdirectory.</li>
+<li>If your data is bigger than 8 Kb, then compress in one or several files and send appropriate messages to uncompress them.</li>
+<li>Do not override the contents or edit the file index.html in the test files subdirectory, it is needed for serving a “document root” when testing the local web servers.</li>
+<li>Testing of databases results is NOT encouraged.</li>
+</ul>
+<h4 id="using-already-existing-data-sets-in-the-image">Using already existing data sets in the image:</h4>
+<ul>
+<li>In your BioSamples subclass, instance side, add a category named “samples-data” and add appropriate sample data. Beware that each Smalltalk flavor has their own limits in the method size and supporting huge data sets in the image is not encouraged.</li>
+</ul>
+<pre class="smalltalk"><code>BioYourTestCase&gt;&gt;testFilesDirectoryName
+
+  ^ super testFilesDirectoryName , BioObject fileDirectoryClass slash , &#39;GenBankTestFiles&#39;</code></pre>
+<p></p>
+<h2 id="subsystems">SubSystems</h2>
+<h3 id="the-engines-subsystem">The Engines SubSystem</h3>
+<p>BioSmalltalk supports interchangeable strategies by enabling the selection of the most appropriate underlying software package (called engine in our context) or to discover the best option for specific tasks. This is because in Smalltalk flavors very often you have several packages to perform the same task.</p>
+<p>The developer should never hard-code a specific external replaceable package class name in a method, instead, he should write the corresponding adapter subclass and link it to the particular package (see below). Then the BioSmalltalk user could use a generic name for the particular tasks, instead of referring to implementations, which could fail, become unsupported or too slow. For example, to serialize your objects, use</p>
+<pre class="smalltalk"><code>BioSerializationEngine serialize: anObject.</code></pre>
+<p>(In Pharo: to materialize your serialized file just open the File Browser, select the file and Materialize from the right click menu)</p>
+<p>To get the contents at an URL</p>
+<pre class="smalltalk"><code>(BioWebEngine for: anURL) httpGet</code></pre>
+<h4 id="adding-an-engine">Adding an Engine</h4>
+<p>BioAbstractAdapter class defines the interface and abstract behavior for Adapters.</p>
+<ul>
+<li>What we call “Providers” refers to the external classes which are adaptee (<strong>OSPlatformExecutor</strong>, <strong>KomServer</strong>, etc). They could be missing in your platform.</li>
+<li>What we call “Adapters” refers to the final subclasses acting as adapters (prefixed by “Bio” for example: <strong>BioOSPlatformExecutor</strong>, <strong>BioKomServer</strong>, etc)</li>
+</ul>
+<p>The information of which is the current engine in a hierarchy of engines is maintained by the AdapterClass class variable in the corresponding hierarchy. To access the current adapter for an engine evaluate:</p>
+<pre class="smalltalk"><code>BioSerializationEngine adapter</code></pre>
+<p>The information of which is the current provider in the current engine is maintained by the “provider” instance variable.</p>
+<p>If you want to add your engine to BioSmalltalk, these are the required steps:</p>
+<ol style="list-style-type: decimal">
+<li>Check for the kind of engine you want to support at subclasses of BioAbstractAdapter, currently there are engines for:</li>
+</ol>
+<ul>
+<li>Web clients (The historical HTTP client from Squeak, WebClient from Andreas Raab, ZnHttpClient from Sven Van Caekenberghe)</li>
+<li>Serialization clients (Fuel, SRP, SmartReferenceStream, ReferenceStream, Ma object serialization, BOSS, SIXX/SIF)</li>
+<li>OS Execution</li>
+<li>.</li>
+</ul>
+<p>If there is no engine type listed, you will have to check by yourself specific users of your methods and refactor code to support multiple strategies, this can be as easy as changing one method, adding a superclass and implementing some template methods, or as complex as reorganizing a whole set of BioSmalltalk hierarchies.</p>
+<ol start="2" style="list-style-type: decimal">
+<li>Create your subclass and implement these CLASS methods:</li>
+</ol>
+<pre class="smalltalk"><code>#clientClass
+    &quot; Answer a Symbol, the main external class name for this adapter &quot;</code></pre>
+<p>Remember to name the class as a Symbol, do not assume the client has installed your adapter. To answer the actual class use for example: ^ self classFor: #WebUtils</p>
+<pre class="smalltalk"><code>#isPreferredAdapter
+    &quot; Private - Answer &lt;true&gt; if the receiver is the best option for the current image and platform &quot;
+    ^ true</code></pre>
+<p>Don't assume the client will have ANY client actually installed, so you might want to check if #providerIsAvailable</p>
+<p></p>
+<h3 id="the-parsing-subsystem">The Parsing SubSystem</h3>
+<p>This intends to be a general guide for writing a parser in BioSmalltalk. Parsing is a whole area in its own, and writing a parser generally is very difficult and takes time, so be careful when choosing your learning sources. To build a framework to start learning about writing parsers, the following concepts could be useful:</p>
+<ul>
+<li>Determine that you actually need a parser. Recall: A parser is an object that scans an input String, decomposes it into its constituent parts (which you may define), and then optionally processes the parts in some suitable manner.</li>
+<li>How: Most tutorials calls writing a parser “by hand” when you write a parser without any support programming library, so developers use a “parser generator” and write rules for this generator. Why: Because keeping track of contingencies caused by different inputs and input paths is extremelly difficult, and a generated parser code can be proved mathematically.</li>
+<li><strong>BioParser</strong> is the root class for parsers. Parsers use several parsing libraries</li>
+<li><strong>XMLSupport</strong> for parsing in DOM or SAX mode (see below to understand XML parsing modes)</li>
+<li><strong>XMLPullParser</strong> for StAX parsing (see below to understand XML parsing modes)</li>
+<li><strong>PetitParser</strong> for parsing formatted or structured text. If you don’t know anything about PetitParser a good guide to start is <a href="http://scg.unibe.ch/research/helvetia/petitparser" class="uri">http://scg.unibe.ch/research/helvetia/petitparser</a></li>
+</ul>
+<h4 id="adding-a-new-parser">Adding a new parser</h4>
+<p>Create the access point in the BioParser class</p>
+<ul>
+<li>Instead of forcing the developers to find the appropriate parser subclass on usage, the BioParser class was implemented as a Facade pattern providing class methods which hides the complexity of the hierarchy, this is, put every access point (method) in the <strong>BioParser class</strong> side.</li>
+<li>Comment the implemented method, this is mandatory.</li>
+</ul>
+<p>Create the parser class</p>
+<ul>
+<li>If you want to parse formatted/structured text, subclass from BioAbstractTextParser or specific subclasses (read class comments to find out which superclass is appropriate for your parser)</li>
+<li>If you want to parse XML, regardless of the mode, subclass from BioXMLParser</li>
+</ul>
+<p>Create the main access method(s) for your parser:</p>
+<ul>
+<li>If you need to return a <strong>Collection</strong> object (<strong>Array</strong>, <strong>OrderedCollection</strong>, etc.), then prefix the selector with #tokenize, example: #tokenizeLocus:, #tokenizeFastaHeader:, #tokenizeSwissProtEntryName:</li>
+<li>If you need to return a BioObject, then prefix the selector with #parse, example: #parseFasta: will return a BioFastaRecord, #parseAmbiguousWithSeparators: will answer a BioSequence with a <strong>BioIUPACAmbiguousDNA</strong> as alphabet.</li>
+</ul>
+<p></p>
+<h4 id="the-blast-xml-parser">The BLAST XML parser</h4>
+<p>Our motivation for building the initial BLAST XML parser is the chance of having customized DOM sub-trees in memory that could be subsequently filtered through messages, not by specifying node names which could change, be sensitive to typos, and are not suitable for performing computational reflection on them. For example, given a blastXmlTree object, instead of filtering by</p>
+<pre class="smalltalk"><code>blastXmlTree filter: [: hit |
+    hit name = ‘Hit_def’ and: [ hit value = ‘Homo sapiens’ ] ]</code></pre>
+<p>the idea is to add semantics to our tree:</p>
+<pre class="smalltalk"><code>blastXmlTree hitDefinitionsEqualTo: &#39;Homo sapiens&#39;.</code></pre>
+<p>which enables to modify completely the implementation or algorithms in the method #hitDefinitionsEqualTo: preserving the same functionality for the programmer. The key in parsing BLAST XML contents are the #select... methods to narrow the parsing to specific element groups. This is, instead of building the whole XML tree into memory (which would be the DOM technique) the idea is that users will only be interested in specific DOM sub-trees.</p>
+<p></p>
+<h3 id="the-entrez-subsystem">The Entrez SubSystem</h3>
+<p>The main class of this subsystem is <strong>BioEntrezClient</strong>, it is the only class that should be visible for users. The database classes are located in the <strong>BioEntrezDatabase</strong> hierarchy, below in this document there is a step guide to add a new database. The database hierarchy does not validate currently the support rettype's and retmodes as described in <a href="http://www.ncbi.nlm.nih.gov/books/NBK25499/table/chapter4.chapter4_table1/?report=objectonly" class="uri">http://www.ncbi.nlm.nih.gov/books/NBK25499/table/chapter4.chapter4_table1/?report=objectonly</a></p>
+<p>This means the developer is responsible to build correctly the request with valid parameters.</p>
+<p>The entrez commands are supported through the <strong>BioEntrezCommand</strong> hierarchy, which contains code to validate command parameters and the base url of the requests. Currently the mandatory documentation for implementation is located at: <a href="http://www.ncbi.nlm.nih.gov/books/NBK25499/" class="uri">http://www.ncbi.nlm.nih.gov/books/NBK25499/</a></p>
+<p>The code samples are located at <strong>BioESamples</strong>, when providing new features, a new method should be created at the appropriate method category.</p>
+<h4 id="steps-for-adding-an-entrez-database">Steps for adding an Entrez database</h4>
+<ul>
+<li>If the database supports retmode and rettype parameters, subclass from <strong>BioERetDatabase</strong></li>
+<li>If the database supports any of the following parameters, subclass from <strong>BioESeqDatabase</strong>: strand, complexity, seq_start, seq_stop</li>
+<li>If the database is any of the Literature Databases (PubMed, PubMed Central (PMC), Journals, OMIM), subclass from BioELitDatabase</li>
+<li>Add a new method named #dbName in class side of the new recently created class, for example</li>
+</ul>
+<pre class="smalltalk"><code>dbName
+    &quot; See superimplementor&#39;s comment &quot;
+    ^ &#39;sra&#39;</code></pre>
+<ul>
+<li>Add a new method in instance side of class <strong>BioEntrezClient</strong>, category “accessing public – databases” for example:</li>
+</ul>
+<pre class="smalltalk"><code>biosample
+    &quot; Set and answer the receiver&#39;s working database &quot;
+
+    ^ self database: (BioEntrezSample new client: self)</code></pre>
+<ul>
+<li>Add a simple test case for the database name in the #testDbClassOf method, example:</li>
+</ul>
+<pre class="smalltalk"><code>    self assert: (BioEntrezDatabase dbClassOf: &#39;biosample&#39;) = BioEntrezSample.</code></pre>
+<p></p>
+<h3 id="the-files-subsystem">The Files SubSystem</h3>
+<ul>
+<li>A <strong>BioFile</strong> is used to represent a file, it's not intended to be used for parsing a file. This is useful when having a <strong>BioCSVFile</strong> which we need to set specific parsing paramenters, for example, numbers of columns to read or ignore header lines.</li>
+<li>A <strong>BioFormatter</strong> is what to use when a developer has an INPUT file and possible an OUTPUT file/stream. It is not necessarily a writer.</li>
+</ul>
+<h4 id="file-formats">File Formats</h4>
+<p>File formats information is available through the class <strong>BioFileFormat</strong> which contains a registry of file formats information. Included information doesn’t mean that the format is supported for reading or writing tough, it just acts as an internal small database of formats available. You may query if a format is registered by evaluating:</p>
+<pre class="smalltalk"><code>BioFileFormat isRegistered: &#39;CSV&#39;.
+BioFileFormat fileExtensionFor: &#39;FASTA&#39;.</code></pre>
+<p>For example to register a new format for CSV files, evaluate;</p>
+<pre class="smalltalk"><code>BioFileFormat
+    registerFormat: &#39;CSV&#39;
+    extensions: #(&#39;csv&#39;)
+    description: &#39;General &#39;&#39;Comma&#39;&#39; Separated Values format&#39;
+    rootClass: BioCSVFile</code></pre>
+<p>The root class is not necessary only for registration purposes, so for now you can pass nil as parameter. In the future a GUI wizard will be provided to generate code automatically for registering and unregistering file formats.</p>
+<p></p>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<p>In case Browsing tools are broken, you can still obtain message senders by evaluating:</p>
+<pre class="smalltalk"><code>SystemNavigation new allLocalCallsOn: &#39;&#39; ofClass: ProtoObject .</code></pre>
+<h1 id="community">Community</h1>
+<h2 id="mailing-lists">Mailing lists</h2>
+<p>A mailing list for users is available as <a href="http://groups.google.com/group/biosmalltalk-users">biosmalltalk-users</a>.</p>
+<p>A mailing list for developers is available as <a href="http://groups.google.com/group/biosmalltalk-developers">biosmalltalk-developers</a>.</p>
+<p>Beware that posts are (or will be) publicly available trhough popular search engines and mailing lists archives. If you want to create another list for a particular package or subsystem, contact the project manager through the project page.</p>
+<p>To ask questions please use the ettiquete suggested at: <a href="http://www.catb.org/~esr/faqs/smart-questions.html" class="uri">http://www.catb.org/~esr/faqs/smart-questions.html</a></p>
+</body>
+</html>

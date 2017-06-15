@@ -1,2 +1,3 @@
-# web
-GitHub Pages for BioSmalltalk Project
+# BioSmalltalk
+BioSmalltalk is a library for doing bioinformatics with Smalltalk.
+
