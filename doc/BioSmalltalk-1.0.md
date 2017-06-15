@@ -402,7 +402,7 @@ sequence := BioSequence newProtein: 'mdstnvrsgmksrkkkpkttvidddddcmtcsacqslkllndf
 		yourself.
 ```
 
-Mostly you would want to iterate over a collection of sequences with metadata information, and populate Sequence Records with annotations and features. Some Bio* libraries use to parse a GenBank file (.gbk) which is a textual format intended to be read by humans (even when there exists for years programming utilities like Entrez E-Utils to retrieve information in a machine-readable format). One format which is easier to parse, is the XML format, and the following example retrieves a XML-formatted file with annotations, which are then stored in BioSeqRecord objects:
+Mostly you would want to iterate over a collection of sequences with metadata information, and populate Sequence Records with annotations and features. Some Bio* libraries use to parse a GenBank file (.gbk) which is a textual format intended to be read by humans (even when there exists for years programming utilities like Entrez E-Utils to retrieve information in a machine-readable format).  One format which is easier to parse, is the XML format, and the following example retrieves a XML-formatted file with annotations, which are then stored in BioSeqRecord objects:
 
 *Work in progress*
 ```smalltalk
@@ -576,114 +576,13 @@ BioLocus
 
 \pagebreak
 
-## Reading and Writing Sequences
+## Wrappers
 
-\pagebreak
+Issuing command line settings is a typo prone process, specially for command line programs with many options. To prevent such situation, BioSmalltalk includes a common set of classes for building wrappers for external programs, which lets use messages to configure program parameters.
 
-### Reading FASTA records
+## Parsing
 
-The following script count letters for each fasta record in the 'Fasta_example_1.fa' file included in the BioSmalltalk distribution. The file contains multiple fasta records which are parsed and iterated collecting the numbers of letters for each record.
-
-```smalltalk 
-| mFasta fPath |
-
-fPath := BioObject testFilesFullDirectoryName , 'Fasta_example_1.fa'.
-mFasta := BioParser parseMultiFasta: (BioFASTAFile on: fPath) contents.
-mFasta collect: #occurrencesOfLetters
-```
-
-And of course the output is not nice for the human eye:
-
-```smalltalk 
- an OrderedCollection(a Dictionary($A->24 $C->18 $G->25 $T->23 ) a Dictionary($A->33 $C->30 $G->23 $T->34 ) a Dictionary($A->25 $C->30 $G->15 $T->39 ) a Dictionary($A->17 $C->9 $G->19 $T->15 ) a Dictionary($A->26 $C->17 $G->36 $T->41 ) a Dictionary($A->8 $C->4 $G->11 $T->31 ) a Dictionary($A->31 $C->16 $G->17 $T->22 ) a Dictionary($A->16 $C->14 $G->15 $T->25 ) a Dictionary($A->14 $C->20 $G->11 $T->21 ) a Dictionary($A->20 $C->29 $G->25 $T->41 ) a Dictionary($A->12 $C->14 $G->8 $T->26 ) a Dictionary($A->26 $C->8 $G->11 $T->24 ) a Dictionary($A->36 $C->37 $G->16 $T->36 ) a Dictionary($A->30 $C->30 $G->33 $T->27 ) a Dictionary($A->14 $C->11 $G->13 $T->20 ) a Dictionary($A->34 $C->31 $G->20 $T->27 ) a Dictionary($A->23 $C->31 $G->29 $T->37 ) a Dictionary($A->30 $C->42 $G->25 $T->31 ) a Dictionary($A->7 $C->23 $G->5 $T->18 ) a Dictionary($A->15 $C->28 $G->6 $T->18 ) a Dictionary($A->23 $C->44 $G->12 $T->37 ))
-```
-
-Suppose we want to display the output in CSV format. Each object could be formatted for CSV by implementing #outputAsCsvTo: aStream. Then modifying the script:
-
-```smalltalk 
-| mFasta filePath |
-
-filePath := BioObject testFilesFullDirectoryName , 'Fasta_example_1.fa'.
-mFasta := BioParser parseMultiFasta: (BioFASTAFile on: filePath) contents.
-BioCSVFormatter new exportFrom: (mFasta collect: #occurrencesOfLetters).
-```
-
-It is possible to get a timestamped file like "CSVOutput3536647736.csv" with contents like this:
-
-```smalltalk 
-A;24
-G;25
-C;18
-T;23
-
-A;33
-G;23
-C;30
-T;34
-
-A;25
-G;15
-C;30
-T;39
-
-...
-```
-\pagebreak
-
-## Genomes
-
-### Downloading Genomes
-
-The BioGenomeDownloader hierarchy is a facility to download latest builds of genomes. Although downloading of any organism is supported, BioSmalltalk includes subclasses which implements methods with parameters for specific organisms. The current release of BioSmalltalk includes downloaders for:
-
-- Bos Taurus 
-- - From the UMD, Center for Bioinformatics and Computational Biology, University of Maryland. 
-- - From The Bovine Genome Sequencing Consortium.
-- Gallus Gallus (International Chicken Genome Sequencing Consortium).
-- Mus Musculus (Celera Genomics and Genome Reference Consortium). 
-- Other genome downloaders could be built by just specializing very few methods.
-
-As downloading whole chromosomes or genomes is usually a long process, all downloads are performed in a background process inside the virtual image. Results are downloaded by default in the directory where the virtual .image and .changes files are located. You may configure which file formats to download by sending the following messages:
-
-- setDownloadASN1 : ASN.1 format files
-- setDownloadFasta : FASTA format files
-- setDownloadGBK : GenBank flat file format (annotation + sequence)
-- setDownloadGBS : GenBank summary file format (annotation only)
-- setDownloadMFA : Masked FASTA file format
-
-An example to download *Bos Taurus* chromosomes from 20 to 24 follows:
-
-```smalltalk
-BioBTauUMD new downloadChromosomes: (20 to: 24).
-```
-
-To download the whole entire genome for *Mus musculus* you could use the following expression:
-
-```smalltalk
-BioMMusculusGRCm downloadAllChromosomes.
-```
-
-Downloading of any organisms is supported by setting respective parameters (for which you should connect to the FTP site and observe the directory and file names) : 
-
-```smalltalk
-BioGenomeDownloader new
-	setDownloadFasta;
-	organismName: 'Monodelphis_domestica';
-	version: '5';
-	fileListPrefix: 'mdm_ref_MonDom';
-	beChrFileNotZeroPrefixed;
-	downloadChromosomes: (7 to: 8).`
-```
-
-Besides the download progress bar, progress could also be monitorized through the Process Browser:
-
-![Pharo Smalltalk Process Browser](images\ProcessBrowserGD.jpg)
-
-\pagebreak
-
-# Parsing
-
-## About parsing
+### About parsing
 
 Parsing is one of the most important part of developing software in Bioinformatics. Parsing is a process by which a developer makes sense of a sentence (acting as input data, usually a **String**), usually by breaking it down into letters or words. 
 
@@ -691,9 +590,7 @@ A parser is an object that scans an input **String**, decomposes it into its con
 
 Programming literature usually refer to writing a parser *by hand* when you write a parser without any support programming library. Currently taking such approach is rare and not recommended (because keeping track of contingencies caused by different inputs and input paths is extremely difficult), so developers usually use a parser generator, i.e. a software library, and write rules for such generator.
 
-\pagebreak
-
-## XML parsing modes
+### XML parsing modes
 
 One of the major file formats in Bioinformatics is XML. XML is a widely supported machine-friendly format much easier to parse than the error-prone processing of hardly structured ASCII format (intended for human reading). Also, another huge advantage of XML is that it constitutes a stack or building block upon which other related technologies has been developed such as XSLT, XML Schema, DocBook, XQuery, XPath, XQL, XPHIL, and others.
 
@@ -724,12 +621,7 @@ or, if you are interested in the type of access to XML nodes, the following "tax
 - Processing interested tokens (allows skipping forward): StAX
 
 
-## Parsing XML files
-
-\pagebreak
-
-
-## Parsing in BioSmalltalk
+### Parsing in BioSmalltalk
 
 BioSmalltalk uses different libraries to simplify and enable parsing of the many formats out there in the Bioinformatics arena. The libraries used are:
 
@@ -737,11 +629,7 @@ BioSmalltalk uses different libraries to simplify and enable parsing of the many
 - XMLPullParser for parsing XML in StAX mode.
 - PetitParser for parsing formatted or structured text. 
 
-The libraries are already installed and tested in BioSmalltalk.
-
-\pagebreak
-
-## Parsing Sequences
+### Parsing Sequences
 
 For example, finding if a given **String**, like 'TCGTACGA', is actually a DNA sequence you just evaluate:
 
@@ -765,7 +653,7 @@ You may want BioObjects if you need to keep working with the resulting bio-objec
 
 You may work with primitive Smalltalk objects like **Integers** or **Strings** if you want "cheap" objects.
 
-## Parsing Accession Numbers
+### Parsing Accession Numbers
 
 An accession number is a unique sequential number assigned to each record (sequence) in a repository. This number allows for tracking of different versions of a sequence record and the associated sequence over time. Parsing an accession number answers a very simple object which you may use to store or index separatedly from its sequence, thus, reducing storage space and processing time. To parse an accession number:
 
@@ -791,7 +679,7 @@ Another shortcut for the same message is #asAccession
 'XP_425521.2' asAccession version --> '2'
 ```
 
-## Parsing FASTA files
+### Parsing FASTA files
 
 This is how to parse a FASTA file with multiple sequences:
 
@@ -845,7 +733,11 @@ TTTCCATTCAGATGCGACCCCAGGTCAGGCGGGGCCACCCGCTGAGTTGAGGC
                         show: seqRecord size; cr; cr ]
 ```
 
-# Alignments
+### Parsing XML files
+
+\pagebreak
+
+## Alignments
 
 Underlying sequences are in a BioAlignment are sequence based (contrary to String based). This could enable to access track information like quality score through the alignment itself, instead of maintaining multiple associated matrices. 
 
@@ -862,7 +754,7 @@ Underlying sequences are in a BioAlignment are sequence based (contrary to Strin
 
 \pagebreak
 
-# BLAST
+## BLAST
 
 Provided by the National Center for Biotechnology Information (NCBI), BLAST is a sequence homology search program that finds all the sequences that match a particular given sequence from a database. The NCBI-GenBank database contains over 150 billion nucleotide bases as of June 2013, and doubling its contents approximately every 18 months. It is considered the most fundamental tool in bioinformatics today, although there are many other similar programs for different cases. In BioSmalltalk you may query programmatically a BLAST at NCBI with the following parameters:
 
@@ -904,13 +796,67 @@ search outputToFile: 'blast-' , BioObject currentSeconds , '.xml'.
 
 \pagebreak
 
-# Entrez
+## Reading and Writing Sequences
+
+### Reading FASTA records
+
+The following script count letters for each fasta record in the 'Fasta_example_1.fa' file included in the BioSmalltalk distribution. The file contains multiple fasta records which are parsed and iterated collecting the numbers of letters for each record.
+
+```smalltalk 
+| mFasta fPath |
+
+fPath := BioObject testFilesFullDirectoryName , 'Fasta_example_1.fa'.
+mFasta := BioParser parseMultiFasta: (BioFASTAFile on: fPath) contents.
+mFasta collect: #occurrencesOfLetters
+```
+
+And of course the output is not nice for the human eye:
+
+```smalltalk 
+ an OrderedCollection(a Dictionary($A->24 $C->18 $G->25 $T->23 ) a Dictionary($A->33 $C->30 $G->23 $T->34 ) a Dictionary($A->25 $C->30 $G->15 $T->39 ) a Dictionary($A->17 $C->9 $G->19 $T->15 ) a Dictionary($A->26 $C->17 $G->36 $T->41 ) a Dictionary($A->8 $C->4 $G->11 $T->31 ) a Dictionary($A->31 $C->16 $G->17 $T->22 ) a Dictionary($A->16 $C->14 $G->15 $T->25 ) a Dictionary($A->14 $C->20 $G->11 $T->21 ) a Dictionary($A->20 $C->29 $G->25 $T->41 ) a Dictionary($A->12 $C->14 $G->8 $T->26 ) a Dictionary($A->26 $C->8 $G->11 $T->24 ) a Dictionary($A->36 $C->37 $G->16 $T->36 ) a Dictionary($A->30 $C->30 $G->33 $T->27 ) a Dictionary($A->14 $C->11 $G->13 $T->20 ) a Dictionary($A->34 $C->31 $G->20 $T->27 ) a Dictionary($A->23 $C->31 $G->29 $T->37 ) a Dictionary($A->30 $C->42 $G->25 $T->31 ) a Dictionary($A->7 $C->23 $G->5 $T->18 ) a Dictionary($A->15 $C->28 $G->6 $T->18 ) a Dictionary($A->23 $C->44 $G->12 $T->37 ))
+```
+
+Suppose we want to display the output in CSV format. Each object could be formatted for CSV by implementing #outputAsCsvTo: aStream. Then modifying the script:
+
+```smalltalk 
+| mFasta filePath |
+
+filePath := BioObject testFilesFullDirectoryName , 'Fasta_example_1.fa'.
+mFasta := BioParser parseMultiFasta: (BioFASTAFile on: filePath) contents.
+BioCSVFormatter new exportFrom: (mFasta collect: #occurrencesOfLetters).
+```
+
+It is possible to get a timestamped file like "CSVOutput3536647736.csv" with contents like this:
+
+```smalltalk 
+A;24
+G;25
+C;18
+T;23
+
+A;33
+G;23
+C;30
+T;34
+
+A;25
+G;15
+C;30
+T;39
+
+...
+```
+
+
+\pagebreak
+
+## Entrez
 
 The Entrez API is an interface for accessing to the Entrez Utilities provided by the NCBI. 
 
-## Entrez Examples
+### Entrez Examples
 
-### FASTA record from Protein
+#### FASTA record from Protein
 
 - Input: Accession number
 - Database: Protein
@@ -923,7 +869,7 @@ The Entrez API is an interface for accessing to the Entrez Utilities provided by
         fetch) outputToFile: 'NP_031402.3.fasta'
 ```
 
-### SeqID record from Protein
+#### SeqID record from Protein
 
 - Input: Accession number
 - Database: Protein
@@ -936,7 +882,7 @@ The Entrez API is an interface for accessing to the Entrez Utilities provided by
         fetch) outputToFile: 'NP_031402.3.seqid'
 ```
 
-### GenBank records from Nuccore
+#### GenBank records from Nuccore
 
 - Input: List of UIDs
 - Database: Nuccore
@@ -948,7 +894,7 @@ The Entrez API is an interface for accessing to the Entrez Utilities provided by
         fetch) outputToFile: 'fetchNuccore3.gb'
 ```
 
-### XML records from Pubmed
+#### XML records from Pubmed
 
 - Input: List of UIDs
 - Database: Pubmed
@@ -962,7 +908,7 @@ result := BioEntrezClient new pubmed
 result outputToFile: 'eFetch1.xml'
 ```
 
-### XML records from Protein
+#### XML records from Protein
 
 - Input: Search terms
 - Database: Protein
@@ -973,15 +919,8 @@ result outputToFile: 'eFetch1.xml'
         search) outputToFile: 'insulin AND homo_protein.xml'
 ```
 
-\pagebreak
-
-# Swiss-Prot and ExPASy
-
-\pagebreak
-
-## PDB
-
-\pagebreak
+##Swiss-Prot and ExPASy
+##PDB
 
 ## PDBePISA
 
@@ -1015,37 +954,60 @@ To further filter results, you can use the XML parser provided by BioSmalltalk. 
 
 \pagebreak
 
-# Wrappers
-
-A wrapper is a Smalltalk class built around an external software, which is assumed to be already installed in the system and usually executed by typing through command-line (cmd.exe, bash, ksh, etc.). In other words, a wrapper could expand on what another object (the wrappee) does. Issuing command line parameters is a typo prone process, specially for command line programs with many options. To prevent such situation, BioSmalltalk includes a set of classes for accessing bioinformatics software, which lets use messages to configure program parameters and use the full power of object technology, i.e. use iterators like do:, collect:, select: and others around these wrappers, save executed wrappers instances for future usage, support multiple software versions transparently, this is, using the same code regardless which version is installed in a host, and include additional parameter validations, among many others. 
-
-The common root class for wrappers is **BioWrapperObject**. This means that any subclass can be queried for the following properties:
-
-- availablePlatforms: Answer a <Collection> of <String> with receiver's supported platforms.
-- platformCheck: Answer <true> if receiver can be executed in the current platform.
-- releases: Answer a <Collection> of <String> each representing a binary name version of the receiver.
-- softwareName: Answer a <String> with the receiver's friendly or known name.
-- url: Answer a <String> representing receiver's URL 
-
-Additionally, each subclass may contain example methods ready to be executed from the Class Browser.  
-
-The following subsections includes examples for wrappers already included in BioSmalltalk. 
-
-\pagebreak
-
-# Population Genetics
+##Population Genetics
 
 Population genetics is the study of genetic variation, specifically the allele frequency changes, in a population, as the population is subject to the four main evolutionary processes: natural selection, genetic drift, mutation and gene flow. It also takes into account the factors of recombination, population subdivision and population structure.
 
-\pagebreak
+### Organism Names
 
-## PLINK
+BioSmalltalk includes lists of common organism names, which can be accessed by:
+
+```smalltalk
+BioSpeciesLists commonAnimalSpecies.
+BioSpeciesLists faoSpecies.
+```
+
+You may also configure a "current" species list, for your particular application.
+
+```smalltalk
+BioSpeciesLists currentSpeciesList
+```
+
+### Population Repository Model
+
+**BioSpecies** serves as a global repository for organism populations. Each organism is represented by a **BioPopRepository**. In turn, each **BioPopRepository** stores repository versions, instances of **BioPopRepositoryVersion**, which has the actual varieties (read: breeds, models, strains, etc. depending on your organism taxonomy vocabulary) .
+
+You may start inspecting this model by evaluating:
+
+```smalltalk
+BioSpecies repositories.
+```
+
+Some repositories could be already populated: 
+
+```smalltalk
+BioSpecies populatedRepositories.
+```
+
+To access a specific organism repository, you may send #repositoryVersions as shown below:
+
+```smalltalk
+(BioSpecies repositoryFor: 'Cattle') repositoryVersions.
+```
+
+And accessing a particular repository version for an organism (the following expression works in PhyloclassTalk, a phylogeography environment based in BioSmalltalk) :
+
+```smalltalk
+(BioSpecies repositoryFor: 'Cattle') repositoryVersionAt: 'Mason'.
+```
+
+### PLINK
 
 The PLINK wrapper exists in at least two variants. One for working with the 1.07 version (class BioPLINK1Wrapper) and another one for working with the "2" version (actually 1.9, class BioPLINK2Wrapper).
 
-### Wrapper execution
+#### Wrapper execution
 
-#### File format conversions
+##### File format conversions
 
 Make a binary pedigree file (.BED):
 
@@ -1088,7 +1050,7 @@ BioPLINK2Wrapper new
 	execute.
 ```
 
-#### Basic filters
+##### Basic filters
 
 To get out specific chromosome excluding individuals with genotyping error > 5% (or call rate at least of 95%):
 
@@ -1121,11 +1083,9 @@ BioPLINK2Wrapper new
 	execute.
 ```
 
-#### Advanced filters
+##### Advanced filters
 
-##### Splitting a genome PED by chromosome. 
-
-This script generates N files according to the number of chromosomes if non-human data is used, using the provided species parameter (cow, dog, horse, mouse, etc). The list of supported organisms is currently available at: [https://www.cog-genomics.org/plink/1.9/input#chr_set](https://www.cog-genomics.org/plink/1.9/input#chr_set)
+Splitting a genome PED by chromosome. This script generates N files according to the number of chromosomes if non-human data is used, using the provided species parameter (cow, dog, horse, mouse, etc). The list of supported organisms is currently available at: [https://www.cog-genomics.org/plink/1.9/input#chr_set](https://www.cog-genomics.org/plink/1.9/input#chr_set)
 
 ```smalltalk
 | samplesDir |
@@ -1139,9 +1099,7 @@ BioPLINK2Wrapper new
 	execSplitChrs
 ```
 
-##### Splitting by family IDs 
-
-This filter requires to specify a **Collection** with valid families in your data set.
+Splitting by family IDs requires to specify a **Collection** with valid families in your data set.
 
 
 ```smalltalk
@@ -1156,9 +1114,7 @@ BioPLINK2Wrapper new
 	execute.
 ```
 
-\pagebreak
-
-### Reading PLINK (PEDMAP) files
+#### Reading PLINK (PEDMAP) files
 
 BioSmalltalk includes a simple utility to browse and select PED/MAP files. You can use it for your projects and launch it by evaluating:
 
@@ -1188,7 +1144,7 @@ BioPEDMAPFilesLoader open
 	actionBlock: [ : pedFilename : mapFilename | "..." ]
 ```
 
-### Forcing reference alleles
+#### Forcing reference alleles
 
 A key step in preparing files for other software packages (such as LAMP-LD) is to add proper reference alleles information to data set, to  ensure allele coding consistency. The inconsistency problem is relevant when merging multiple datasets from different experiments or platforms.
 
@@ -1203,24 +1159,17 @@ BioPLINK2Wrapper new
 	execute.
 ```
 
-\pagebreak
+### ShapeIt
 
-## ShapeIt
+#### Input preparation
 
-### Input preparation
+ShapeIt is a fast and accurate method for estimation of haplotypes (a.k.a. phasing) from a set of SNP genotypes (.ped format or its .bed/.bim/.fam binary version) and a genetic map (.map format), and produces as output, either a single set of estimated haplotypes, or a haplotype graph that encapsulates the uncertainty about the underlying haplotypes. The software is currently only available in Unix-like OS.
 
-ShapeIt is a fast and accurate method for estimation of haplotypes (a.k.a. phasing) from a set of SNP genotypes (.ped format or its .bed/.bim/.fam binary version) and a genetic map (.map format), and produces as output, either a single set of estimated haplotypes, or a haplotype graph that encapsulates the uncertainty about the underlying haplotypes. The software is currently only available in Unix-like OS. ShapeIt2 outputs a pair .haps (IMPUTE2 format) and .sample files.
+ShapeIt2 outputs a pair .haps (IMPUTE2 format) and .sample files.
 
-### Wrapper execution
+#### Wrapper execution
 
-To use the wrapper the program binary must be in the system PATH environment variable and all input files, being binarized PLINK (bed, bim, fam) or textual PLINK (ped, map) must have the same name. You may query which ShapeIt releases are available in the current BioSmalltalk version by evaluating:
-
-```smalltalk
-BioShapeIt2Wrapper releases
-```
-
-Each resulting element represents a Class which can be used to execute a specific software version. 
-The following expression launches ShapeIt2 from BioSmalltalk, setting several parameters such as:
+To use the wrapper the program binary must be in the system PATH environment variable and all input files, being binarized PLINK (bed, bim, fam) or textual PLINK (ped, map) must have the same name. The following expression launches ShapeIt2 from BioSmalltalk, setting several parameters such as:
 
 - The number of burn-in MCMC iterations
 - The input file name (without extension),
@@ -1248,13 +1197,11 @@ BioShapeIt2WrapperR644 new
  execute
 ```
 
-\pagebreak
-
-## LAMP-LD
+### LAMP-LD
 
 BioLAMPLD is a package which includes several classes for working with the LAMP-LD software for doing inference of locus-specific ancestry in recently admixed populations. LAMP-LD is currently available only for Unix/Linux systems.
 
-### Input preparation
+#### Input preparation
 
 The LAMP-LD package includes a class for writing the admixed genotype sample file (.geno or .gen) which contains genotype data for the problem population.
 
@@ -1308,9 +1255,8 @@ BioLAMPLDWrapper new
 	executeWS.
 ```
 
-\pagebreak
 
-## HMMER
+### HMMER
 
 To test if the HMMER wrapper is working properly for your platform evaluate:
 
@@ -1322,7 +1268,9 @@ BioHMMERWrapper new
 
 Successfull execution should answer a BioResultObject with results:  
 
-![BioResultObject inspector on HMMER execution](images\Inspector_BioResultObject.jpg){ width=70% }
+
+
+
 
 Now this is translated code from the HMMER tutorial:
 
@@ -1352,17 +1300,25 @@ BioHMMERWrapper new
 
 \pagebreak
 
-## Phyx
+### Phyx
 
-*Work in progress*
+* Work in progress *
 
-# Phylogenetics
+\pagebreak
+
+##Phylogenetics
 
 Phylogenetics use genetic variation between species and populations (taxa) to infer evolutionary relationships.
 
-## Nexus File Format
+* Work in progress *
 
-## Newick File Format
+\pagebreak
+
+### Nexus File Format
+
+\pagebreak
+
+### Newick File Format
 
 Newick is a file format used for representing phylogenetic trees in computer-readable form. In contrast to Nexus files they contain no further syntax elements or other information than the trees. representing rooted trees with labled nodes and specified lengths between parent and child
  
@@ -1372,22 +1328,18 @@ Newick is a file format used for representing phylogenetic trees in computer-rea
 - Optionally one can label internal nodes. For example: ((cow:12, gnu:10)bigThings:3, (ant:23, bat:19)smallThings:5);
 - Officially the tree ends in a semicolon (redundant since the parens must balance)
 - The standard also does not allow length for the distance for a line leading to the root since this has no meaning in the context of plylogeny
-- 
-http://biopython.org/DIST/docs/api/
 
 \pagebreak
 
-# Clustering
+##Clustering
 
 \pagebreak
 
-# Graphics
+## Graphics
 
 Graphics are built and rendered using the [Roassal agile visualization engine](http://www.objectprofile.com), which is already installed in the BioPharo distribution. The Roassal engine includes a large set of examples using short Smalltalk expressions.
 
-\pagebreak
-
-## DotPlots
+### DotPlots
 
 A simple visualization for the comparison of two sequences (or one sequence against itself) is [DotPlot](https://en.wikipedia.org/wiki/Dot_plot_%28bioinformatics%29) , which provides an overview of the extent of similarity between sequences without diving into details. DotPlots operates by projecting two sequences to be compared along the horizontal and vertical axis of a Matrix. DotPlots requires three main parameters:
 
@@ -1395,7 +1347,9 @@ A simple visualization for the comparison of two sequences (or one sequence agai
 - A "Scoring Scheme", specified as a **Matrix**. The simplest scoring scheme is the Identity Matrix, but others can be used, for example the EMBOSS DNA scoring matrix. Other extended matrix is used when sequences contain ambiguity codes, or using proteins.
 - A "Threshold" or "cut-off score".
 
-When plotting mummer output, it is necessary to use the lengths of the input sequences to set the plot ranges, otherwise the plot will be automatically scaled around the minimum and maximum data points. Additionally, any character or symbol that does not belong to the [a-zA-Z] set is ignored. 
+When plotting mummer output, it is necessary to use the lengths of the input sequences to set the plot ranges, otherwise the plot will be automatically scaled around the minimum and maximum data points
+
+Any character or symbol that does not belong to the [a-zA-Z] set is ignored. 
 
 
 *Drawing a 2D DotPlot with two random sequences*
@@ -1418,15 +1372,11 @@ BioRTDotPlot
 	open.
 ```
 
-\pagebreak
-
-## Bar Charts
+### Bar Charts
 
 *Under construction, please contact mailing list to collaborate.*
 
-\pagebreak
-
-## Histograms
+### Histograms
 
 Histograms are frequently used to get an overview of quantitative distributions. Examples where histograms are applied are: Distribution of codon usage, sequence lengths distribution, etc.
 
@@ -1442,11 +1392,11 @@ Histograms are frequently used to get an overview of quantitative distributions.
 
 \pagebreak
 
-# Widgets
+## Widgets
 
 BioSmalltalk includes widgets to provide user interfaces. These utilities are small re-usable windows which could be easily integrated into your applications. 
 
-## Chromosome Selection
+### Chromosome Selection
 
 A small utility to select organisms and their chromosomes for posterior analysis. Each organism has already configured their corresponding list of chromosomes.
 
@@ -1456,17 +1406,19 @@ BioChrSelector open.
 
 ![Selecting MAP file](images\BioCHR_Selector_1.jpg){ width=75% }
 
+\pagebreak
 
-## CSV Explorer
+### CSV Explorer
 
 The BioCSVExplorer class builds a widget that allow users to visually explore a CSV file and import its contents to the image.
 
 *Work in progress*
 
 
-## Matrix Explorer
+### Matrix Explorer
 
 *Work in progress*
+
 
 \pagebreak
 
